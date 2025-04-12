@@ -43,7 +43,7 @@ public class FacultyService {
         }
     }
 
-    public Collection<Faculty> getStudentsWithValueAge(String color) {
+    public Collection<Faculty> getFacultiesWithValueColor(String color) {
         return facultiesMap.values().stream()
                 .filter(obj -> color.toLowerCase().equals(obj.getColor()))
                 .collect(Collectors.toList());
