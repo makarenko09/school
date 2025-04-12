@@ -48,8 +48,5 @@ public class StudentController {
         return studentService.deleteStudent(id);
     }
 
-    @ExceptionHandler(NoSuchFieldException.class)
-    public ResponseEntity<Student> handleNoSuchFieldException(NoSuchFieldException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
+
 }

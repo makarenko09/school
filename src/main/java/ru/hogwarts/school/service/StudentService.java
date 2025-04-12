@@ -48,7 +48,7 @@ public class StudentService {
 
     public Collection<Student> getStudentsWithValueAge(int age) {
         return studentsMap.values().stream()
-                .filter(student -> student.getAge() == age)
+                .filter(obj -> obj.getAge() == age)
                 .collect(Collectors.toList());
     }
 }
