@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.hogwarts.school.controller.FacultyController;
 import ru.hogwarts.school.controller.StudentController;
-import ru.hogwarts.school.model.Student;
 
 @ControllerAdvice(assignableTypes = {StudentController.class, FacultyController.class})
 public class MainControllerAdvice extends RuntimeException {
