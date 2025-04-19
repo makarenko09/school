@@ -5,6 +5,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +18,10 @@ public class StudentService {
 
     public Student createStudent(Student student) {
         return repository.save(student);
+    }
+
+    public List<Student> createStudents(List<Student> students) {
+        return repository.saveAll(students);
     }
 
     public Student getStudent(Long id) {

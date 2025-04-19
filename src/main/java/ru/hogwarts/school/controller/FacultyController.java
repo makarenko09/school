@@ -5,6 +5,8 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.List;
+
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {
@@ -26,6 +28,11 @@ public class FacultyController {
     @PostMapping
     public Faculty addFaculty(@RequestBody Faculty faculty) {
         return facultyService.createFaculty(faculty);
+    }
+
+    @PostMapping("/s")
+    public List<Faculty> addFaculties(@RequestBody List<Faculty> faculties) {
+        return facultyService.createFaculties(faculties);
     }
 
     @PutMapping
