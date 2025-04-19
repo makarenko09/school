@@ -24,12 +24,12 @@ public class StudentService {
         if (studentsMap.get(id) != null) {
         return studentsMap.get(id);
         } else {
-            throw new NoSuchQuestionException(" - " + id + " does not exist");
+            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
         }
     }
 
     public Student updateStudent(Student student) {
-        Student someObj = studentsMap.values().stream().filter(obj -> Objects.equals(obj.getId(), student.getId())).map(obj -> obj.newObject(student.getId(), student.getName(), student.getAge())).findFirst().orElseThrow(() -> new NoSuchQuestionException(" - " + student + " does not exist"));
+        Student someObj = studentsMap.values().stream().filter(obj -> Objects.equals(obj.getId(), student.getId())).map(obj -> obj.newObject(student.getId(), student.getName(), student.getAge())).findFirst().orElseThrow(() -> new NoSuchSomeObjectException(" - " + student + " does not exist"));
         studentsMap.put(student.getId(), someObj);
         return studentsMap.get(student.getId());
     }
@@ -38,7 +38,7 @@ public class StudentService {
         if (studentsMap.get(id) != null) {
             return studentsMap.remove(id);
         } else {
-            throw new NoSuchQuestionException(" - " + id + " does not exist");
+            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
         }
     }
 

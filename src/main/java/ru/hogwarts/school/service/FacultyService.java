@@ -25,12 +25,12 @@ public class FacultyService {
         return facultiesMap.get(id);
 
         } else {
-            throw new NoSuchQuestionException(" - " + id + " does not exist");
+            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
         }
     }
 
     public Faculty updateFaculty(Faculty faculty) {
-        Faculty someObj = facultiesMap.values().stream().filter(obj -> Objects.equals(obj.getId(), faculty.getId())).map(obj -> obj.newObject(faculty.getId(), faculty.getName(), faculty.getColor())).findFirst().orElseThrow(() -> new NoSuchQuestionException(" - " + faculty + " does not exist"));
+        Faculty someObj = facultiesMap.values().stream().filter(obj -> Objects.equals(obj.getId(), faculty.getId())).map(obj -> obj.newObject(faculty.getId(), faculty.getName(), faculty.getColor())).findFirst().orElseThrow(() -> new NoSuchSomeObjectException(" - " + faculty + " does not exist"));
         facultiesMap.put(faculty.getId(), someObj);
         return facultiesMap.get(faculty.getId());
     }
@@ -39,7 +39,7 @@ public class FacultyService {
         if (facultiesMap.get(id) != null) {
             return facultiesMap.remove(id);
         } else {
-            throw new NoSuchQuestionException(" - " + id + " does not exist");
+            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
         }
     }
 
