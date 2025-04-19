@@ -1,20 +1,21 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @RestController
 @RequestMapping("/student")
 public class StudentController {
     private final StudentService studentService;
-
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-
 
     @GetMapping("/someStudents/{amount}")
     public Collection<Student> getStudentsWithAge(@PathVariable int amount) {
@@ -22,7 +23,6 @@ public class StudentController {
     }
     @GetMapping("/{id}")
     public Student getStudent(@PathVariable Long id) {
-
         return studentService.getStudent(id);
     }
 
@@ -44,8 +44,8 @@ public class StudentController {
 //        return ResponseEntity.ok(someObject);
 //    }
     @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
+    public Student deleteStudent(@PathVariable Long id) {
+        return studentService.deleteStudent(id);
     }
 
 
