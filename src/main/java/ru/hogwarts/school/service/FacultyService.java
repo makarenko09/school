@@ -5,9 +5,6 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +19,7 @@ public class FacultyService {
         return repository.save(faculty);
     }
 
-    public Faculty getFaculty(long id) {
+    public Faculty getFaculty(Long id) {
         if (repository.findById(id).isPresent()) {
             return repository.findById(id).get();
         } else {
@@ -38,7 +35,7 @@ public class FacultyService {
         }
     }
 
-    public void deleteFaculty(long id) {
+    public void deleteFaculty(Long id) {
         Faculty objDeleted = getFaculty(id);
         repository.delete(objDeleted);
     }

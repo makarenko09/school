@@ -19,7 +19,7 @@ public class StudentService {
         return repository.save(student);
     }
 
-    public Student getStudent(long id) {
+    public Student getStudent(Long id) {
         if (repository.findById(id).isPresent()) {
             return repository.findById(id).get();
         } else {
@@ -35,7 +35,7 @@ public class StudentService {
         }
     }
 
-    public void deleteStudent(long id) {
+    public void deleteStudent(Long id) {
         Student objDeleted = getStudent(id);
         repository.delete(getStudent(id));
     }

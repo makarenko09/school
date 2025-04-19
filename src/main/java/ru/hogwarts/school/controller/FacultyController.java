@@ -19,7 +19,7 @@ public class FacultyController {
         return facultyService.getFacultiesWithValueColor(color);
     }
     @GetMapping("/{id}")
-    public Faculty getFaculty(@PathVariable long id) {
+    public Faculty getFaculty(@PathVariable Long id) {
         return facultyService.getFaculty(id);
     }
 
@@ -34,7 +34,7 @@ public class FacultyController {
     }
 
     @DeleteMapping("/{id}")
-    public Faculty deleteFaculty(@PathVariable long id) {
-        return facultyService.deleteFaculty(id);
+    public void deleteFaculty(@PathVariable Long id) {
+        facultyService.deleteFaculty(id);
     }
 }
