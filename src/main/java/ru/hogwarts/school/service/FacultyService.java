@@ -1,55 +1,50 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.repositories.FacultyRepository;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-public class FacultyService {/*
+public class FacultyService {
     private final Map<Long, Faculty> facultiesMap = new HashMap<>();
-    private long lastId = 0L;*/
-    private final FacultyRepository repository;
+    private long lastId = 0L;
 
-    public FacultyService(FacultyRepository repository) {
-        this.repository = repository;
-    }
-
-     
     public Faculty createFaculty(Faculty faculty) {
-        return repository.save(faculty);
+        faculty.setId(++lastId);
+        facultiesMap.put((this.lastId), faculty);
+        return faculty;
     }
 
+    public Faculty getFaculty(Long id) {
+        if (facultiesMap.get(id) != null) {
+        return facultiesMap.get(id);
 
-    public Faculty getFaculty(long id) {
-        if (repository.findById(id).isPresent()) {
-            return repository.findById(id).get();
         } else {
-            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
+            throw new NoSuchQuestionException(" - " + id + " does not exist");
         }
     }
 
-     
     public Faculty updateFaculty(Faculty faculty) {
-        if (repository.findById(faculty.getId()).isPresent()) {
-            return repository.save(faculty);
+        Faculty someObj = facultiesMap.values().stream().filter(obj -> Objects.equals(obj.getId(), faculty.getId())).map(obj -> obj.newObject(faculty.getId(), faculty.getName(), faculty.getColor())).findFirst().orElseThrow(() -> new NoSuchQuestionException(" - " + faculty + " does not exist"));
+        facultiesMap.put(faculty.getId(), someObj);
+        return facultiesMap.get(faculty.getId());
+    }
+
+    public Faculty deleteFaculty(Long id) {
+        if (facultiesMap.get(id) != null) {
+            return facultiesMap.remove(id);
         } else {
-            throw new NoSuchSomeObjectException(" - " + faculty + " does not exist");
+            throw new NoSuchQuestionException(" - " + id + " does not exist");
         }
     }
 
-     
-    public void deleteFaculty(long id) {
-        Faculty objDeleted = getFaculty(id);
-        repository.delete(objDeleted);
-    }
-
-     
     public Collection<Faculty> getFacultiesWithValueColor(String color) {
-        return repository.findAll().stream()
+        return facultiesMap.values().stream()
                 .filter(obj -> color.toLowerCase().equals(obj.getColor()))
                 .collect(Collectors.toList());
     }
