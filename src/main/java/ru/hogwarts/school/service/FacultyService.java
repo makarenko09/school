@@ -18,11 +18,9 @@ public class FacultyService {
         this.repository = repository;
     }
 
-
     public Faculty createFaculty(Faculty faculty) {
         return repository.save(faculty);
     }
-
 
     public Faculty getFaculty(long id) {
         if (repository.findById(id).isPresent()) {
@@ -32,7 +30,6 @@ public class FacultyService {
         }
     }
 
-
     public Faculty updateFaculty(Faculty faculty) {
         if (repository.findById(faculty.getId()).isPresent()) {
             return repository.save(faculty);
@@ -41,12 +38,10 @@ public class FacultyService {
         }
     }
 
-
     public void deleteFaculty(long id) {
         Faculty objDeleted = getFaculty(id);
         repository.delete(objDeleted);
     }
-
 
     public Collection<Faculty> getFacultiesWithValueColor(String color) {
         return repository.findAll().stream()
