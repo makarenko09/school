@@ -12,6 +12,11 @@ import java.util.Objects;
         @GeneratedValue
         private Long id;
 
+        public Student(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
         private String name;
         private int age;
 
