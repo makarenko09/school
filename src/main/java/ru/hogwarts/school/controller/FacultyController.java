@@ -14,7 +14,7 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("/someFaculties/{amount}")
+    @GetMapping("/someFaculties/{color}")
     public Collection<Faculty> getFacultiesWitColor(@PathVariable String color) {
         return facultyService.getFacultiesWithValueColor(color);
     }
