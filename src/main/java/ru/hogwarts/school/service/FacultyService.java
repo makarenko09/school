@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,40 +12,44 @@ import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
-    private final Map<Long, Faculty> facultiesMap = new HashMap<>();
-    private long lastId = 0L;
+    private final FacultyRepository repository;
+
+    public FacultyService(FacultyRepository repository) {
+        this.repository = repository;
+    }
+
 
     public Faculty createFaculty(Faculty faculty) {
-        faculty.setId(++lastId);
-        facultiesMap.put((this.lastId), faculty);
-        return faculty;
+        return repository.save(faculty);
     }
 
-    public Faculty getFaculty(Long id) {
-        if (facultiesMap.get(id) != null) {
-        return facultiesMap.get(id);
 
+    public Faculty getFaculty(long id) {
+        if (repository.findById(id).isPresent()) {
+            return repository.findById(id).get();
         } else {
             throw new NoSuchSomeObjectException(" - " + id + " does not exist");
         }
     }
+
 
     public Faculty updateFaculty(Faculty faculty) {
-        Faculty someObj = facultiesMap.values().stream().filter(obj -> Objects.equals(obj.getId(), faculty.getId())).map(obj -> obj.newObject(faculty.getId(), faculty.getName(), faculty.getColor())).findFirst().orElseThrow(() -> new NoSuchSomeObjectException(" - " + faculty + " does not exist"));
-        facultiesMap.put(faculty.getId(), someObj);
-        return facultiesMap.get(faculty.getId());
-    }
-
-    public Faculty deleteFaculty(Long id) {
-        if (facultiesMap.get(id) != null) {
-            return facultiesMap.remove(id);
+        if (repository.findById(faculty.getId()).isPresent()) {
+            return repository.save(faculty);
         } else {
-            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
+            throw new NoSuchSomeObjectException(" - " + faculty + " does not exist");
         }
     }
 
+
+    public void deleteFaculty(long id) {
+        Faculty objDeleted = getFaculty(id);
+        repository.delete(objDeleted);
+    }
+
+
     public Collection<Faculty> getFacultiesWithValueColor(String color) {
-        return facultiesMap.values().stream()
+        return repository.findAll().stream()
                 .filter(obj -> color.toLowerCase().equals(obj.getColor()))
                 .collect(Collectors.toList());
     }
