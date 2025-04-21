@@ -25,24 +25,19 @@ public class StudentService {
     }
 
     public Student getStudent(Long id) {
-        if (repository.findById(id).isPresent()) {
-            return repository.findById(id).get();
-        } else {
-            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
-        }
+        return repository.findById(id).orElseThrow(() -> new NoSuchSomeObjectException(" - " + id + " does not exist"));
     }
 
     public Student updateStudent(Student student) {
-        if (repository.findById(student.getId()).isPresent()) {
-            return repository.save(student);
-        } else {
+        if (repository.existsById(student.getId())) {
             throw new NoSuchSomeObjectException(" - " + student + " does not exist");
         }
+        return repository.save(student);
     }
 
     public void deleteStudent(Long id) {
         Student objDeleted = getStudent(id);
-        repository.delete(getStudent(id));
+        repository.delete(objDeleted);
     }
 
     public Collection<Student> getAllStudents() {
