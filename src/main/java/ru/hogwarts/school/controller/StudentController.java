@@ -15,7 +15,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/someStudents/{amount}")
+    @GetMapping("/get/{amount}")
     public Collection<Student> getStudentsWithAge(@PathVariable int amount) {
         return studentService.getStudentsWithValueAge(amount);
     }
@@ -24,22 +24,22 @@ public class StudentController {
         return studentService.getStudent(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Student addStudent(@RequestBody Student student) {
         return studentService.createStudent(student);
     }
 
-    @PostMapping("/s")
+    @PostMapping("/create/all")
     public List<Student> addStudents(@RequestBody List<Student> students) {
         return studentService.createStudents(students);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public Student updateStudent(@RequestBody Student student) {
         return studentService.updateStudent(student);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/del/{id}")
     public void deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
     }

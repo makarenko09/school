@@ -16,7 +16,7 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("/someFaculties/{color}")
+    @GetMapping("/get/{color}")
     public Collection<Faculty> getFacultiesWitColor(@PathVariable String color) {
         return facultyService.getFacultiesWithValueColor(color);
     }
@@ -25,22 +25,22 @@ public class FacultyController {
         return facultyService.getFaculty(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Faculty addFaculty(@RequestBody Faculty faculty) {
         return facultyService.createFaculty(faculty);
     }
 
-    @PostMapping("/s")
+    @PostMapping("/create/all")
     public List<Faculty> addFaculties(@RequestBody List<Faculty> faculties) {
         return facultyService.createFaculties(faculties);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public Faculty updateFaculty(@RequestBody Faculty faculty) {
         return facultyService.updateFaculty(faculty);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/del/{id}")
     public void deleteFaculty(@PathVariable Long id) {
         facultyService.deleteFaculty(id);
     }

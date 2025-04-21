@@ -25,19 +25,14 @@ public class FacultyService {
     }
 
     public Faculty getFaculty(Long id) {
-        if (repository.findById(id).isPresent()) {
-            return repository.findById(id).get();
-        } else {
-            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
-        }
+        return repository.findById(id).orElseThrow(() -> new NoSuchSomeObjectException(" - " + id + " does not exist"));
     }
 
     public Faculty updateFaculty(Faculty faculty) {
-        if (repository.findById(faculty.getId()).isPresent()) {
-            return repository.save(faculty);
-        } else {
+        if (repository.existsById(faculty.getId())) {
             throw new NoSuchSomeObjectException(" - " + faculty + " does not exist");
         }
+            return repository.save(faculty);
     }
 
     public void deleteFaculty(Long id) {
