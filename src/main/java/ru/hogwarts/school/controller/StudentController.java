@@ -15,11 +15,16 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/get/{amount}")
+    @GetMapping("/get/many")
+    public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") short min, @RequestParam("max") short max) {
+        return studentService.getStudentsAgeBetween(min, max);
+    }
+
+    @GetMapping("/get/many/{amount}")
     public Collection<Student> getStudentsWithAge(@PathVariable int amount) {
         return studentService.getStudentsWithValueAge(amount);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Student getStudent(@PathVariable Long id) {
         return studentService.getStudent(id);
     }
@@ -29,7 +34,7 @@ public class StudentController {
         return studentService.createStudent(student);
     }
 
-    @PostMapping("/create/all")
+    @PostMapping("/create/many")
     public List<Student> addStudents(@RequestBody List<Student> students) {
         return studentService.createStudents(students);
     }
