@@ -72,6 +72,11 @@ import java.util.Objects;
         }
 
         @Override
+        public String toString() {
+            return "Student{" + "id=" + id + ", faculty=" + faculty + ", name='" + name + '\'' + ", age=" + age + '}';
+        }
+
+        @Override
         public int hashCode() {
             return Objects.hash(id, name, age);
         }

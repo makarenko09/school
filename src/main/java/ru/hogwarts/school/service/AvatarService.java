@@ -18,7 +18,6 @@ import ru.hogwarts.school.repository.StudentRepository;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -44,7 +43,6 @@ public class AvatarService {
         Files.deleteIfExists(filePath);
         try (
                 InputStream is = avatarFile.getInputStream();
-
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
                 BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
@@ -68,14 +66,13 @@ public class AvatarService {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-
     public void downloadAvatarFromDir(Long studentId, HttpServletResponse httpHeaders) throws IOException {
-//       Optional<Student> student = studentRepository.findById(studentId);
         Avatar avatar = findAvatar(studentId);
+
         Path filePath = Path.of(avatar.getFilePath());
         try (
                 InputStream is = Files.newInputStream(filePath);
-                OutputStream os = httpHeaders.getOutputStream();
+                OutputStream os = httpHeaders.getOutputStream()
         ) {
             httpHeaders.setStatus(200);
             httpHeaders.setContentType(avatar.getMediaType());
@@ -83,6 +80,7 @@ public class AvatarService {
             is.transferTo(os);
         }
     }
+
     public ResponseEntity<byte[]> downloadAvatarFromDB(Long studentId) {
         Avatar avatar = findAvatar(studentId);
         HttpHeaders headers = new HttpHeaders();

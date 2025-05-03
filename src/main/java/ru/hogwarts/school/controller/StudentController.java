@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/student")
 public class StudentController {
     private final StudentService studentService;
+
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
@@ -30,6 +31,7 @@ public class StudentController {
     public Collection<Student> getStudentsWithAge(@PathVariable int amount) {
         return studentService.getStudentsWithValueAge(amount);
     }
+
     @GetMapping("/get/{id}")
     public Student getStudent(@PathVariable Long id) {
         return studentService.getStudent(id);
