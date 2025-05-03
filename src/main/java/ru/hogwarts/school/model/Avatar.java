@@ -24,6 +24,10 @@ public class Avatar {
         this.data = data;
     }
 
+    public byte[] getData() {
+        return data;
+    }
+
     public long getFileSize() {
         return fileSize;
     }

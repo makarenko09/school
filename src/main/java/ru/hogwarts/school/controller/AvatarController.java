@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,4 +31,9 @@ public class AvatarController {
         avatarService.downloadAvatarFromDir(studentId, response);
         return ResponseEntity.ok().build();
     }
-}
+    @GetMapping(value = "/{studentId}/avatar-from-db")
+    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long studentId) {
+        return avatarService.downloadAvatarFromDB(studentId);
+    }
+    }
+

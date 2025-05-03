@@ -4,6 +4,10 @@ package ru.hogwarts.school.service;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
@@ -78,6 +82,13 @@ public class AvatarService {
             httpHeaders.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
         }
+    }
+    public ResponseEntity<byte[]> downloadAvatarFromDB(Long studentId) {
+        Avatar avatar = findAvatar(studentId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
+        headers.setContentLength(avatar.getData().length);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
 }
 
