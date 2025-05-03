@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -33,7 +35,7 @@ public class AvatarService {
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
         Student student = studentRepository.getById(studentId);
 
-        Path filePath = Path.of(avatarsDir, "Student(" + "id=" + student.getId() + ", name='" + student.getName() + '\'' + ", age=" + student.getAge() + ')' + "." + getExtensions(avatarFile.getOriginalFilename()));
+        Path filePath = Path.of(avatarsDir, "Student(" + "id=" + student.getId() + ", name='" + student.getName() + "'" + ", age=" + student.getAge() + ')' + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (
@@ -61,4 +63,21 @@ public class AvatarService {
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
+
+
+    public void downloadAvatarFromDir(Long studentId, HttpServletResponse httpHeaders) throws IOException {
+//       Optional<Student> student = studentRepository.findById(studentId);
+        Avatar avatar = findAvatar(studentId);
+        Path filePath = Path.of(avatar.getFilePath());
+        try (
+                InputStream is = Files.newInputStream(filePath);
+                OutputStream os = httpHeaders.getOutputStream();
+        ) {
+            httpHeaders.setStatus(200);
+            httpHeaders.setContentType(avatar.getMediaType());
+            httpHeaders.setContentLength((int) avatar.getFileSize());
+            is.transferTo(os);
+        }
+    }
 }
+

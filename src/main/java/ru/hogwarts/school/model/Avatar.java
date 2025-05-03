@@ -24,6 +24,18 @@ public class Avatar {
         this.data = data;
     }
 
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
     public void setMediaType(String mediaType) {
         this.mediaType = mediaType;
     }
