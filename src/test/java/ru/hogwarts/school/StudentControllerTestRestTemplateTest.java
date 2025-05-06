@@ -66,20 +66,36 @@ public class StudentControllerTestRestTemplateTest {
         testStudent.setAge(88);
         expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", testStudent, Student.class);
 
-//        expectedTestStudent.setAge(100);
-
-        String converToJson = new Gson().toJson(expectedTestStudent);
-        JSONObject expectedUpdateStudent = new JSONObject(converToJson);
-expectedUpdateStudent.put("age", 48);
-expectedUpdateStudent.put("name", "TestName4");
+        System.out.println("StudentControllerTestRestTemplateTest.updateOneStudent");
+        System.out.println(expectedTestStudent);
+//
+        expectedTestStudent.setAge(100);
+        System.out.println(expectedTestStudent);
+        //1way
+//        Gson gson = new Gson();
+//        String converToJson = new Gson().toJson(expectedTestStudent);
+//        JSONObject expectedUpdateStudent = new JSONObject(converToJson);
+//
+//        expectedUpdateStudent.put("name", "test");
+//
+//        //JSON to Java Object
+//        Student student = gson.fromJson(String.valueOf(expectedUpdateStudent.getJSONObject("student")), Student.class);
+//
+//        //2way - Java Object to JSON
+////        ObjectMapper objectMapper = new ObjectMapper();
+////        objectMapper.writeValueAsString(new File("src/test/resources/json_student.json"));
+//
+//
+// TODO
         String urlAndPath = String.format("http://localhost:" + port + "/student/update/");
 
-        template.put(urlAndPath, expectedUpdateStudent.toString());
+        template.put(urlAndPath, expectedTestStudent);
 
         Student actualTestStudent = template.getForObject("http://localhost:" + port + "/student/get" + expectedTestStudent.getId(), Student.class);
         Assertions.assertThat(actualTestStudent).isNotNull();
         Assertions.assertThat(actualTestStudent.getAge()).isNotNull();
-
+        System.out.println("StudentControllerTestRestTemplateTest.updateOneStudent");
+        System.out.println(actualTestStudent);
 
 // FIXME - Можно передавать строку, но не принимает JSON - говорит что нет для него данных в "exchange", возможно чать пути spring отдает на запрос главной страницы, а остальную часть передает в тело запроса, и не ясно, какие из путей будут в url, а какие в HttpEntity, кроме тех случае когда указываем PathVariable для entity:
 //        HttpHeaders headers = new HttpHeaders();

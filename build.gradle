@@ -21,6 +21,8 @@ dependencies {
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'com.google.code.gson:gson:2.13.1'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.18.3'
+
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
