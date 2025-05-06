@@ -1,5 +1,8 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -37,24 +40,31 @@ public class StudentController {
         return studentService.getStudent(id);
     }
 
+
+
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e) {
+//        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
+//    }
     @PostMapping("/create")
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
-    }
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+                    Student createdStudent = studentService.createStudent(student);
+            return ResponseEntity.ok(createdStudent);
+            }
 
     @PostMapping("/create/many")
     public List<Student> addStudents(@RequestBody List<Student> students) {
         return studentService.createStudents(students);
     }
 
-    @PutMapping("/update")
-    public Student updateStudent(@RequestBody Student student) {
-        return studentService.updateStudent(student);
+    @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
+        return ResponseEntity.ok(studentService.updateStudent(student));
     }
 
-    @DeleteMapping("/del/{id}")
-    public void deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
+    @DeleteMapping("/delete/{id}")
+    public Student deleteStudent(@PathVariable Long id) {
+        return studentService.deleteStudent(id);
     }
 }
 

@@ -1,13 +1,12 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
-import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,15 +33,16 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
-        if (repository.existsById(student.getId())) {
+        if (!repository.existsById(student.getId())) {
             throw new NoSuchSomeObjectException(" - " + student + " does not exist");
         }
         return repository.save(student);
     }
 
-    public void deleteStudent(Long id) {
+    public Student deleteStudent(Long id) {
         Student objDeleted = getStudent(id);
         repository.delete(objDeleted);
+        return objDeleted;
     }
 
 
@@ -55,4 +55,5 @@ public class StudentService {
                 .filter(obj -> obj.getAge() == age)
                 .collect(Collectors.toList());
     }
+
 }
