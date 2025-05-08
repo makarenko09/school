@@ -2,8 +2,8 @@ package ru.hogwarts.school;
 
 
 import com.google.gson.Gson;
+import net.minidev.json.JSONObject;
 import org.assertj.core.api.Assertions;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +12,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentControllerTestRestTemplateTest {
@@ -37,6 +40,7 @@ public class StudentControllerTestRestTemplateTest {
 
     @Test
     void createOneStudent() {
+        template = new TestRestTemplate();
         testStudent.setName("testName");
         testStudent.setAge(666);
 //        testStudent.setId(null);
@@ -52,6 +56,7 @@ public class StudentControllerTestRestTemplateTest {
 
     @Test
     void getOneStudent() {
+        template = new TestRestTemplate();
         testStudent.setName("testName2");
         testStudent.setAge(989);
         expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", testStudent, Student.class);
@@ -62,6 +67,7 @@ public class StudentControllerTestRestTemplateTest {
 
     @Test
     void updateOneStudent() throws Exception {
+        template = new TestRestTemplate();
         testStudent.setName("testName3");
         testStudent.setAge(88);
         expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", testStudent, Student.class);
@@ -70,6 +76,8 @@ public class StudentControllerTestRestTemplateTest {
         System.out.println(expectedTestStudent);
 //
         expectedTestStudent.setAge(100);
+        expectedTestStudent.setName("testName4");
+        expectedTestStudent.setId(expectedTestStudent.getId());
         System.out.println(expectedTestStudent);
         //1way
 //        Gson gson = new Gson();
@@ -106,4 +114,42 @@ public class StudentControllerTestRestTemplateTest {
 //        https://theboreddev.com/test-put-request-in-spring-java-application/amp/
 //        https://medium.com/@idiotN/how-to-call-delete-method-using-resttemplate-spring-boot-4d9ffd779085
     }
+
+    @Test
+    void deleteOneStudent() throws Exception {
+        template = new TestRestTemplate();
+        testStudent.setName("testName5");
+        testStudent.setAge(60);
+        expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", testStudent, Student.class);
+
+        String urlAndPath = String.format("http://localhost:" + port + "/student/delete/" + expectedTestStudent.getId());
+
+        template.delete(urlAndPath, expectedTestStudent, expectedTestStudent.getId());
+
+//        Student actualTestStudent = template.getForObject("http://localhost:" + port + "/student/get" + expectedTestStudent.getId(), Student.class);
+
+    }
+
+    @Test
+    void createOneStudentWithJSON() throws Exception {
+        template = new TestRestTemplate();
+
+        JSONObject expectedUpdateStudents = new JSONObject();
+        expectedUpdateStudents.put("name", "testName6");
+        expectedUpdateStudents.put("age", "49");
+        expectedUpdateStudents.put("age", "99");
+
+//        Gson gson = new Gson();
+//        String converToJson = new Gson().toJson(expectedUpdateStudents);
+//        JSONObject expectedUpdateStudent = new JSONObject(converToJson);
+
+        expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", expectedUpdateStudents, Student.class);
+//        expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create/many", List.of(), Student.class);
+
+
+        Student responseTestGetStudent = template.getForObject("http://localhost:" + port + "/student/get" + expectedTestStudent.getId(), Student.class);
+        Assertions.assertThat(responseTestGetStudent).isNotNull();
+    }
+    // TODO
+//    void createManyStudent() throws Exception {
 }

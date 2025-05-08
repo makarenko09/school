@@ -40,12 +40,6 @@ public class StudentController {
         return studentService.getStudent(id);
     }
 
-
-
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e) {
-//        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
-//    }
     @PostMapping("/create")
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
                     Student createdStudent = studentService.createStudent(student);
