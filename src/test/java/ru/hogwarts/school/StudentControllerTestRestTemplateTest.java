@@ -1,27 +1,25 @@
 package ru.hogwarts.school;
 
 
-import com.google.gson.Gson;
 import org.assertj.core.api.Assertions;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentControllerTestRestTemplateTest {
-    Long testId = null;
-    Student testStudent = new Student();
-
-    Student expectedTestStudent = null;
-    String testName = "testName";
-    int testAge = 666;
 
     @LocalServerPort
     private int port;
@@ -37,73 +35,95 @@ public class StudentControllerTestRestTemplateTest {
 
     @Test
     void createOneStudent() {
+        Student testStudent = new Student();
         testStudent.setName("testName");
-        testStudent.setAge(666);
-//        testStudent.setId(null);
-//            testId = testStudent.getId();
-//            testStudent.setId(testId);
-        setStartSettingsforCreateMethodOfStudent();
+        testStudent.setAge(37);
+
+        Student expectedTestStudent = template.postForObject(getBaseUrl() + "/create", testStudent, Student.class);
         Assertions.assertThat(expectedTestStudent).isNotNull();
-    }
+        //with exchange
+        HttpEntity<Student> request = new HttpEntity<>(testStudent);
+        ResponseEntity<Student> response = template.exchange(
+                getBaseUrl() + "/create",
+                HttpMethod.POST,
+                request,
+                Student.class
+        );
 
-    void setStartSettingsforCreateMethodOfStudent() {
-        expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", testStudent, Student.class);
+        assertNotNull(expectedTestStudent.getClass());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("testName", response.getBody().getName());
+        assertEquals(expectedTestStudent.getName(), response.getBody().getName());
     }
 
     @Test
-    void getOneStudent() {
+    void getOneStudent() throws Exception {
+        Student testStudent = new Student();
+
         testStudent.setName("testName2");
-        testStudent.setAge(989);
-        expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", testStudent, Student.class);
+        testStudent.setAge(65);
 
-        Student responseTestGetStudent = template.getForObject("http://localhost:" + port + "/student/get" + expectedTestStudent.getId(), Student.class);
-        Assertions.assertThat(responseTestGetStudent).isNotNull();
+        Student expectedTestStudent = template.postForObject(getBaseUrl() + "/create", testStudent, Student.class);
+
+        HttpEntity<Student> request = new HttpEntity<>(expectedTestStudent);
+        ResponseEntity<Student> response = template.exchange(
+                getBaseUrl() + "/get/" + expectedTestStudent.getId(),
+                HttpMethod.GET,
+                request,
+                Student.class
+        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(testStudent.getName(), response.getBody().getName());
+        assertEquals(expectedTestStudent.getId(), response.getBody().getId());
     }
 
     @Test
-    void updateOneStudent() throws Exception {
+    void updateStudent_shouldReturnUpdatedStudent() {
+        Student testStudent = new Student();
         testStudent.setName("testName3");
-        testStudent.setAge(88);
-        expectedTestStudent = template.postForObject("http://localhost:" + port + "/student/create", testStudent, Student.class);
+        testStudent.setAge(84);
 
-        System.out.println("StudentControllerTestRestTemplateTest.updateOneStudent");
-        System.out.println(expectedTestStudent);
-//
-        expectedTestStudent.setAge(100);
-        System.out.println(expectedTestStudent);
-        //1way
-//        Gson gson = new Gson();
-//        String converToJson = new Gson().toJson(expectedTestStudent);
-//        JSONObject expectedUpdateStudent = new JSONObject(converToJson);
-//
-//        expectedUpdateStudent.put("name", "test");
-//
-//        //JSON to Java Object
-//        Student student = gson.fromJson(String.valueOf(expectedUpdateStudent.getJSONObject("student")), Student.class);
-//
-//        //2way - Java Object to JSON
-////        ObjectMapper objectMapper = new ObjectMapper();
-////        objectMapper.writeValueAsString(new File("src/test/resources/json_student.json"));
-//
-//
-// TODO
-        String urlAndPath = String.format("http://localhost:" + port + "/student/update/");
+        Student created = template.postForObject(getBaseUrl() + "/create", testStudent, Student.class);
 
-        template.put(urlAndPath, expectedTestStudent);
+        created.setName("updatedTestStudent");
 
-        Student actualTestStudent = template.getForObject("http://localhost:" + port + "/student/get" + expectedTestStudent.getId(), Student.class);
-        Assertions.assertThat(actualTestStudent).isNotNull();
-        Assertions.assertThat(actualTestStudent.getAge()).isNotNull();
-        System.out.println("StudentControllerTestRestTemplateTest.updateOneStudent");
-        System.out.println(actualTestStudent);
+        HttpEntity<Student> request = new HttpEntity<>(created);
+        ResponseEntity<Student> response = template.exchange(
+                getBaseUrl() + "/update",
+                HttpMethod.PUT,
+                request,
+                Student.class
+        );
 
-// FIXME - Можно передавать строку, но не принимает JSON - говорит что нет для него данных в "exchange", возможно чать пути spring отдает на запрос главной страницы, а остальную часть передает в тело запроса, и не ясно, какие из путей будут в url, а какие в HttpEntity, кроме тех случае когда указываем PathVariable для entity:
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("updatedTestStudent", response.getBody().getName());
+        assertThat(response.getBody().getAge()).isEqualTo(84);
+        assertEquals(created.getId(), response.getBody().getId());
+    }
 
-//        ResponseEntity<Student> response = template.exchange(String.format("http://localhost:" + port + "/student/update/"), HttpMethod.PUT, new HttpEntity<>(expectedUpdateStudent), Student.class);
-//
-//        https://theboreddev.com/test-put-request-in-spring-java-application/amp/
-//        https://medium.com/@idiotN/how-to-call-delete-method-using-resttemplate-spring-boot-4d9ffd779085
+    private String getBaseUrl() {
+        return "http://localhost:" + port + "/student";
+    }
+
+    @Test
+    void deleteOneStudent() throws Exception {
+        Student testStudent = new Student();
+        testStudent.setName("testName5");
+        testStudent.setAge(122);
+
+        Student expectedTestStudent = template.postForObject(getBaseUrl() + "/create", testStudent, Student.class);
+
+        HttpEntity<Student> request = new HttpEntity<>(expectedTestStudent);
+        ResponseEntity<Student> response = template.exchange(
+                getBaseUrl() + "/delete/" + expectedTestStudent.getId(),
+                HttpMethod.DELETE,
+                request,
+                Student.class
+        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
