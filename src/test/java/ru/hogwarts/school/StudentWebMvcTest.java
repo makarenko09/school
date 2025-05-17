@@ -31,7 +31,6 @@ public class StudentWebMvcTest {
     @MockitoBean
     private StudentRepository studentRepository;
 
-    //    @MockitoBean
     @MockitoBean
     private StudentService studentService;
 
@@ -164,6 +163,5 @@ public class StudentWebMvcTest {
                         .delete("/student/delete/3", 3L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
     }
 }
