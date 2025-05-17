@@ -1,5 +1,7 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -33,8 +35,8 @@ public class FacultyController {
     }
 
     @PostMapping("/create")
-    public Faculty addFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
+    public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
+        return ResponseEntity.ok(facultyService.createFaculty(faculty));
     }
 
     @PostMapping("/create/many")
@@ -42,9 +44,9 @@ public class FacultyController {
         return facultyService.createFaculties(faculties);
     }
 
-    @PutMapping("/update")
-    public Faculty updateFaculty(@RequestBody Faculty faculty) {
-        return facultyService.updateFaculty(faculty);
+    @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
+        return ResponseEntity.ok(facultyService.updateFaculty(faculty));
     }
 
     @DeleteMapping("/delete/{id}")

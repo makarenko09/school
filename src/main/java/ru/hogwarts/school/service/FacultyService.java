@@ -29,7 +29,7 @@ public class FacultyService {
     }
 
     public Faculty updateFaculty(Faculty faculty) {
-        if (repository.existsById(faculty.getId())) {
+        if (!repository.existsById(faculty.getId())) {
             throw new NoSuchSomeObjectException(" - " + faculty + " does not exist");
         }
             return repository.save(faculty);
