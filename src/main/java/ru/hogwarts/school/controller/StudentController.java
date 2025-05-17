@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,16 +35,10 @@ public class StudentController {
     }
 
     @GetMapping("/get/{id}")
-    public Student getStudent(@PathVariable Long id) {
-        return studentService.getStudent(id);
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudent(id));
     }
 
-
-
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e) {
-//        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
-//    }
     @PostMapping("/create")
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
                     Student createdStudent = studentService.createStudent(student);
