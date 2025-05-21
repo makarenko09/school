@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -12,16 +13,24 @@ import java.util.stream.Collectors;
 @Service
 public class StudentService {
     private final StudentRepository repository;
+    private final LocalValidatorFactoryBean localValidatorFactoryBean;
 
-    public StudentService(StudentRepository repository) {
+    public StudentService(StudentRepository repository, LocalValidatorFactoryBean localValidatorFactoryBean) {
         this.repository = repository;
+        this.localValidatorFactoryBean = localValidatorFactoryBean;
     }
 
     public Student createStudent(Student student) {
+        localValidateUnique(); //TODO - add localValidateUnique()
         return repository.save(student);
     }
 
+    private void localValidateUnique() {
+        //TODO - add localValidateUnique()
+    }
+
     public List<Student> createStudents(List<Student> students) {
+
         return repository.saveAll(students);
     }
 

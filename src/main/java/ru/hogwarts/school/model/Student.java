@@ -2,11 +2,12 @@ package ru.hogwarts.school.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import ru.hogwarts.school.service.FieldValidationException;
 
 import java.util.Objects;
 
-    @Entity
-    public class Student {
+@Entity
+public class Student implements ValidateUnique {
         @Id
         @GeneratedValue
         private Long id;
@@ -15,29 +16,53 @@ import java.util.Objects;
         @JsonBackReference
         private Faculty faculty;
 
-        public Faculty getFaculty() {
-            return faculty;
-        }
+    private String name;
+    private int age;
 
-        public Student(String name, int age) {
+    public Student(String name, int age) {
+        validControl(name, age);
             this.name = name;
             this.age = age;
         }
 
-        private String name;
-        private int age;
+    public Student(String name) {
+        validControl(name, 0);
+        age = 20;
+        this.name = name;
+    }
 
-        public Student(Long id, String name, int age) {
+    public Student(Long id, String name, int age) {
+        validControl(name, age);
             this.id = id;
             this.name = name;
             this.age = age;
         }
 
-        public Student() {
+    public Student() {
 
         }
 
-        public Student newObject(Long id, String name, int age) {
+    public void validControl(String name, int age) {
+        String input = String.valueOf(age);
+        //один или ряд нулей
+        boolean isValidFor20Age = input.matches("^0+$");
+        //один или ряд нулей с числом возраста
+        boolean isInvalidForAge = input.matches("^0+[0-9]+$");
+        if (isValidFor20Age) {
+            age = 20;
+        }
+
+        if ((age < 16) || isInvalidForAge) {
+            throw new FieldValidationException(input);
+        }
+        validName(name);
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public Student newObject(Long id, String name, int age) {
             return new Student(id, name, age);
         }
 
@@ -82,4 +107,8 @@ import java.util.Objects;
         }
 
 
+    @Override
+    public String getContentType() {
+        return this.getClass().getSimpleName();
     }
+}

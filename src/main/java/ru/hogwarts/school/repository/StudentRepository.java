@@ -12,6 +12,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     List<Student> getStudentById(Long id);
 
+    Student getByName(String name);
 
 //    default Optional<Student> findByIdWithNull(Long aLong) {
 //        try {

@@ -11,12 +11,20 @@ import java.util.stream.Collectors;
 @Service
 public class FacultyService {
     private final FacultyRepository repository;
+    private final ThreadValidateUnique threadValidateUnique;
 
-    public FacultyService(FacultyRepository repository) {
+    public FacultyService(FacultyRepository repository, ThreadValidateUnique threadValidateUnique) {
         this.repository = repository;
+        this.threadValidateUnique = threadValidateUnique;
     }
 
+    private void localValidateUnique(Faculty faculty) {
+        if (threadValidateUnique.validateUniqueField(Faculty.class, "name", faculty.getName()) > 0) {
+            throw new FieldValidationException(faculty.getName());
+        }
+    }
     public Faculty createFaculty(Faculty faculty) {
+        localValidateUnique(faculty);
         return repository.save(faculty);
     }
 
@@ -32,7 +40,8 @@ public class FacultyService {
         if (!repository.existsById(faculty.getId())) {
             throw new NoSuchSomeObjectException(" - " + faculty + " does not exist");
         }
-            return repository.save(faculty);
+        //TODO - add localValidateUnique()
+        return repository.save(faculty);
     }
 
     public void deleteFaculty(Long id) {

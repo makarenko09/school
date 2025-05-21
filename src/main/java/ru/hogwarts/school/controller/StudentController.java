@@ -37,6 +37,7 @@ public class StudentController {
     @GetMapping("/get/{id}")
     public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getStudent(id));
+
     }
 
     @PostMapping("/create")
