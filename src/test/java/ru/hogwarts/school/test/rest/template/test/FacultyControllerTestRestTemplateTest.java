@@ -1,4 +1,4 @@
-package ru.hogwarts.school;
+package ru.hogwarts.school.test.rest.template.test;
 
 
 import org.assertj.core.api.Assertions;
@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import ru.hogwarts.school.controller.FacultyController;
 import ru.hogwarts.school.model.Faculty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -152,5 +155,17 @@ public class FacultyControllerTestRestTemplateTest {
                 Faculty.class
         );
         assertEquals(HttpStatus.NOT_FOUND, responseGet.getStatusCode());
+    }
+    @Test
+    void createManyFaculties () {
+        Faculty testFaculty1 = new Faculty();
+        testFaculty1.setName("testName");
+        testFaculty1.setColor("38");
+
+        Faculty testFaculty2 = new Faculty();
+        testFaculty2.setName("testName");
+        testFaculty2.setColor("38");
+        List<Faculty> testFaculties = new ArrayList<>(Arrays.asList(testFaculty1, testFaculty2));
+        HttpEntity<List<Faculty>> request = new HttpEntity<>(testFaculties);
     }
 }

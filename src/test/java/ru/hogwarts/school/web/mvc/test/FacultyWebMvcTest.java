@@ -1,4 +1,4 @@
-package ru.hogwarts.school;
+package ru.hogwarts.school.web.mvc.test;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;

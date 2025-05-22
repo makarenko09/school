@@ -1,4 +1,4 @@
-package ru.hogwarts.school;
+package ru.hogwarts.school.web.mvc.test;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.NoSuchSomeObjectException;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Optional;

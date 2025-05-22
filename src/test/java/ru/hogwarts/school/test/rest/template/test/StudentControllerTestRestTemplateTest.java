@@ -1,4 +1,4 @@
-package ru.hogwarts.school;
+package ru.hogwarts.school.test.rest.template.test;
 
 
 import org.assertj.core.api.Assertions;
@@ -143,10 +143,10 @@ public class StudentControllerTestRestTemplateTest {
         testStudent2
                 .setAge(1351);
 
-        List<Student> testStudent = new ArrayList<Student>();
-        testStudent.add(testStudent1);
-        testStudent.add(testStudent2);
-        HttpEntity<List<Student>> request = new HttpEntity<>(testStudent);
+        List<Student> testStudents = new ArrayList<Student>();
+        testStudents.add(testStudent1);
+        testStudents.add(testStudent2);
+        HttpEntity<List<Student>> request = new HttpEntity<>(testStudents);
         ResponseEntity<List<Student>> response = template.exchange(
                 getBaseUrl() + "/create/many",
                 HttpMethod.POST,
