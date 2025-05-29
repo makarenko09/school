@@ -1,4 +1,4 @@
-package ru.hogwarts.school;
+package ru.hogwarts.school.web.mvc;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.NoSuchSomeObjectException;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -73,7 +73,57 @@ public class StudentWebMvcTest {
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.age").value(age));
     }
+    // TODO - saveManyStudentsTest
+@Test
+public void saveManyStudentsTest() throws Exception {
+    String name = "testName";
+    final Long id = 1L;
+    final int age = 41;
+    JSONObject studentJsonActual = new JSONObject();
+    studentJsonActual.put("name", name);
+    studentJsonActual.put("age", age);
 
+
+    Student studentExtend = new Student();
+    studentExtend.setId(id);
+    studentExtend.setName(name);
+    studentExtend.setAge(age);
+
+
+    String name2 = "testName";
+    final Long id2 = 1L;
+    final int age2 = 41;
+
+    studentJsonActual.put("name", name2);
+    studentJsonActual.put("age", age2);
+
+    Student studentExtend2 = new Student();
+    studentExtend.setId(id2);
+    studentExtend.setName(name2);
+    studentExtend.setAge(age2);
+    List<Student> students = List.of(studentExtend, studentExtend2);
+    when(studentService.createStudents(any(List.class))).thenReturn(students);
+//    when(studentService.getStudent(any(Long.class))).thenReturn(studentExtend);
+//    when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(studentExtend));
+    mockMvc.perform(MockMvcRequestBuilders
+                    .post("/student/create/many")
+                    .content(studentJsonActual.toString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+//            .andExpect(jsonPath("$.id").value(id))
+//            .andExpect(jsonPath("$.name").value(name))
+//            .andExpect(jsonPath("$.age").value(age));
+//    mockMvc.perform(MockMvcRequestBuilders
+//                    .get("/student/get/1")
+//                    .accept(MediaType.APPLICATION_JSON))
+//
+//            .andExpect(status().isOk())
+//            .andDo(print())
+//            .andExpect(jsonPath("$.id").value(id))
+//            .andExpect(jsonPath("$.name").value(name))
+//            .andExpect(jsonPath("$.age").value(age));
+}
     @Test
     public void updateStudentTest() throws Exception {
         String name = "testName";

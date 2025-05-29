@@ -8,8 +8,8 @@ import ru.hogwarts.school.controller.StudentController;
 
 @ControllerAdvice(assignableTypes = {StudentController.class, FacultyController.class})
 public class MainControllerAdvice extends RuntimeException {
-    @ExceptionHandler(NoSuchSomeObjectException.class)
-    public ResponseStatus handleNoSuchSomeObjectException(NoSuchSomeObjectException e) {
+    @ExceptionHandler(NoSuchObjectException.class)
+    public ResponseStatus handleNoSuchSomeObjectException(NoSuchObjectException e) {
         return e.getClass().getAnnotation(ResponseStatus.class);
     }
 }

@@ -41,9 +41,9 @@ public class StudentController {
 
     @PostMapping("/create")
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
-                    Student createdStudent = studentService.createStudent(student);
-            return ResponseEntity.ok(createdStudent);
-            }
+        Student createdStudent = studentService.createStudent(student);
+        return ResponseEntity.ok(createdStudent);
+    }
 
     @PostMapping("/create/many")
     public List<Student> addStudents(@RequestBody List<Student> students) {

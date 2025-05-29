@@ -24,9 +24,16 @@ public class FacultyController {
         return facultyService.getFacultiesWithValueColor(color);
     }
 
-    @GetMapping("/get/students/{id}")
-    public Collection<Student> getStudentsWithFaculty(@PathVariable Long id) {
-        return facultyService.getFaculty(id).getStudents();
+    @GetMapping("/get/students/{facultyId}")
+    public ResponseEntity<List<Student>> getStudentsByFaculty(@PathVariable Long facultyId) {
+        List<Student> students = facultyService.getStudentsByFaculty(facultyId);
+        return ResponseEntity.ok(students);
+    }
+
+    @PostMapping("/add/students/{facultyId}")
+    public ResponseEntity<Void> addStudentsToFaculty(@PathVariable Long facultyId, @RequestBody List<Student> students) {
+        facultyService.addStudentsToFaculty(facultyId, students);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/get/{id}")

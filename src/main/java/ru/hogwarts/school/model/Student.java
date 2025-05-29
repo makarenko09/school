@@ -10,13 +10,17 @@ import java.util.Objects;
         @Id
         @GeneratedValue
         private Long id;
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "faculty_id")
         @JsonBackReference
         private Faculty faculty;
 
         public Faculty getFaculty() {
             return faculty;
+        }
+
+        public void setFaculty(Faculty faculty) {
+            this.faculty = faculty;
         }
 
         public Student(String name, int age) {

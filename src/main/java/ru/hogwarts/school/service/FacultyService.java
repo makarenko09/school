@@ -1,8 +1,11 @@
 package ru.hogwarts.school.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,9 +14,32 @@ import java.util.stream.Collectors;
 @Service
 public class FacultyService {
     private final FacultyRepository repository;
+private final StudentRepository studentRepository;
 
-    public FacultyService(FacultyRepository repository) {
+    public FacultyService(FacultyRepository repository, StudentRepository studentRepository) {
         this.repository = repository;
+        this.studentRepository = studentRepository;
+    }
+
+    public void addStudentsToFaculty(Long facultyId, List<Student> students) {
+        // Получаем факультет по ID (или выбрасываем исключение, если не найден)
+        Faculty faculty = repository.findById(facultyId)
+                .orElseThrow(() -> new EntityNotFoundException("Faculty not found by id: " + facultyId));
+
+        // Устанавливаем связь "каждый студент -> факультет"
+        for (Student student : students) {
+            student.setFaculty(faculty);
+        }
+        // Сохраняем всех студентов в БД, вместе с обновлённым foreign key
+        studentRepository.saveAll(students);
+    }
+    public List<Student> getStudentsByFaculty(Long facultyId) {
+        // Достаём факультет для проверки наличия
+        Faculty faculty = repository.findById(facultyId)
+                .orElseThrow(() -> new EntityNotFoundException("Faculty not found by id: " + facultyId));
+
+        // Возвращаем всех студентов с данным факультетом
+        return studentRepository.findAllByFaculty(faculty);
     }
 
     public Faculty createFaculty(Faculty faculty) {
@@ -25,12 +51,12 @@ public class FacultyService {
     }
 
     public Faculty getFaculty(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NoSuchSomeObjectException(" - " + id + " does not exist"));
+        return repository.findById(id).orElseThrow(() -> new NoSuchObjectException(" - " + id + " does not exist"));
     }
 
     public Faculty updateFaculty(Faculty faculty) {
         if (!repository.existsById(faculty.getId())) {
-            throw new NoSuchSomeObjectException(" - " + faculty + " does not exist");
+            throw new NoSuchObjectException(" - " + faculty + " does not exist");
         }
             return repository.save(faculty);
     }

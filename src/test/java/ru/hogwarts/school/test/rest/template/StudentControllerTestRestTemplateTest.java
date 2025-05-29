@@ -1,4 +1,4 @@
-package ru.hogwarts.school;
+package ru.hogwarts.school.test.rest.template;
 
 
 import org.assertj.core.api.Assertions;

@@ -6,7 +6,6 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,12 +28,12 @@ public class StudentService {
     return repository.findByAgeBetween(min, max);
 }
     public Student getStudent(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NoSuchSomeObjectException(" - " + id + " does not exist"));
+        return repository.findById(id).orElseThrow(() -> new NoSuchObjectException(" - " + id + " does not exist"));
     }
 
     public Student updateStudent(Student student) {
         if (!repository.existsById(student.getId())) {
-            throw new NoSuchSomeObjectException(" - " + student + " does not exist");
+            throw new NoSuchObjectException(" - " + student + " does not exist");
         }
         return repository.save(student);
     }

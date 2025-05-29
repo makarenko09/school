@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,9 +22,9 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "faculty")
+    @OneToMany(mappedBy = "faculty", orphanRemoval = true)
     @JsonManagedReference
-    private List<Student> students;
+    private List<Student> students = new ArrayList<>();
 
     public List<Student> getStudents() {
         return students;
@@ -41,6 +43,10 @@ public class Faculty {
 
     public Faculty() {
 
+    }
+    public void addStudent(Student student) {
+        students.add(student);
+        student.setFaculty(this);
     }
 
     public Long getId() {
