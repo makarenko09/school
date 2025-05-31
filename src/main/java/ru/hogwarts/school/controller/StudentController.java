@@ -30,9 +30,27 @@ public class StudentController {
         return studentService.createStudents(students);
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
-        return ResponseEntity.ok(studentService.getStudent(id));
+    @GetMapping("/get-count-by-studentName")
+    public Integer getCountByStudentName() {
+        return studentService.getCountOfStudentByName();
+    }
+
+    @GetMapping("/get-AVG-age-by-studentAge")
+    public Integer getAVGAgeByStudentAge() {
+        return studentService.getAverageAgeOfStudentsByAge();
+    }
+    @GetMapping("/get-late-students-by-studentId")
+public List<Student> getLateStudentsByStudentId() {
+        return studentService.getFiveLateStudentsById();
+    }
+    @GetMapping("/get/many")
+    public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") short min, @RequestParam("max") short max) {
+        return studentService.getStudentsAgeBetween(min, max);
+    }
+
+    @GetMapping("/get/faculty/{idStudent}")
+    public ResponseEntity<Faculty> getFacultyByStudent(@PathVariable Long idStudent) {
+        return ResponseEntity.ok(studentService.getStudent(idStudent).getFaculty());
     }
 
     @GetMapping("/get/many/{age}")
@@ -40,14 +58,9 @@ public class StudentController {
         return studentService.getStudentsWithValueAge(age);
     }
 
-    @GetMapping("/get/many")
-    public Collection<Student> getStudentsByRangeAge(@RequestParam("min") int min, @RequestParam("max") int max) {
-        return studentService.getStudentsWithValuesAge(min, max);
-    }
-
-    @GetMapping("/get/faculty/{idStudent}")
-    public ResponseEntity<Faculty> getFacultyByStudent(@PathVariable Long idStudent) {
-        return ResponseEntity.ok(studentService.getStudent(idStudent).getFaculty());
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudent(id));
     }
 
     @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
