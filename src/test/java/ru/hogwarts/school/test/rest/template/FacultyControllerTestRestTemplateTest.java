@@ -236,10 +236,10 @@ public class FacultyControllerTestRestTemplateTest {
     public void addStudentsWithFaculty() {
         // Создаем студентов и сохраняем
         Student student1 = new Student();
-        student1.setName("testName12");
+        student1.setName("testName11112");
         student1.setAge(2211);
         Student student2 = new Student();
-        student2.setName("testName13");
+        student2.setName("testName11113");
         student2.setAge(2212);
         studentRepository.saveAll(List.of(student1, student2));
 
