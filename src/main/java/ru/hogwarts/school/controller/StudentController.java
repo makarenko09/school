@@ -19,6 +19,19 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+    @GetMapping("/get-count-by-studentName")
+    public Integer getCountByStudentName() {
+        return studentService.getCountOfStudentByName();
+    }
+
+    @GetMapping("/get-AVG-age-by-studentAge")
+    public Integer getAVGAgeByStudentAge() {
+        return studentService.getAverageAgeOfStudentsByAge();
+    }
+    @GetMapping("/get-late-students-by-studentId")
+public List<Student> getLateStudentsByStudentId() {
+        return studentService.getFiveLateStudentsById();
+    }
     @GetMapping("/get/many")
     public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") short min, @RequestParam("max") short max) {
         return studentService.getStudentsAgeBetween(min, max);

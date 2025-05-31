@@ -30,7 +30,15 @@ public class StudentService {
     public Student getStudent(Long id) {
         return repository.findById(id).orElseThrow(() -> new NoSuchObjectException(" - " + id + " does not exist"));
     }
-
+public Integer getCountOfStudentByName(){
+        return repository.getCountOfStudentsByName();
+}
+public Integer getAverageAgeOfStudentsByAge(){
+        return repository.getAverageAgeOfStudentsByAge();
+}
+public List<Student> getFiveLateStudentsById(){
+        return repository.getFiveLateStudentsById();
+}
     public Student updateStudent(Student student) {
         if (!repository.existsById(student.getId())) {
             throw new NoSuchObjectException(" - " + student + " does not exist");
