@@ -75,13 +75,15 @@ public class Faculty {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Faculty faculty)) return false;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color);
-    }
+        if ((this == o)) return true;
+        if (!(o == null || getClass() != o.getClass())) return false;
+        Faculty faculty = (Faculty) o;
 
+        return id!= null ? id.equals(faculty.id) : faculty.id == null;
+    }
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return id != null ? id.hashCode() : 0;
     }
 
     public Faculty newObject(Long id, String name, String color) {

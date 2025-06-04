@@ -7,7 +7,6 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -20,7 +19,7 @@ public class FacultyController {
     }
 
     @GetMapping("/get/many/{color}")
-    public Collection<Faculty> getFacultiesWitColor(@PathVariable String color) {
+    public List<Faculty> getFacultiesWitColor(@PathVariable String color) {
         return facultyService.getFacultiesWithValueColor(color);
     }
 

@@ -18,8 +18,12 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
+import ru.hogwarts.school.service.FacultyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +44,8 @@ public class FacultyControllerTestRestTemplateTest {
     private StudentRepository studentRepository;
     @Autowired
     private FacultyRepository facultyRepository;
+    @Autowired
+    private FacultyService facultyService;
 
     @Test
     void contextLoads() {
@@ -88,6 +94,7 @@ public class FacultyControllerTestRestTemplateTest {
                 Faculty.class
         );
         Faculty reternCreatedFaculty = Objects.requireNonNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         HttpEntity<Faculty> requestCreatedFaculty = new HttpEntity<>(reternCreatedFaculty);
         ResponseEntity<Faculty> responseCreatedFaculty = template.exchange(
@@ -233,7 +240,7 @@ public class FacultyControllerTestRestTemplateTest {
     }
 
     @Test
-    public void addStudentsWithFaculty() {
+    public void addStudentsToFaculty() {
         // Создаем студентов и сохраняем
         Student student1 = new Student();
         student1.setName("testName11112");
@@ -241,31 +248,34 @@ public class FacultyControllerTestRestTemplateTest {
         Student student2 = new Student();
         student2.setName("testName11113");
         student2.setAge(2212);
-        studentRepository.saveAll(List.of(student1, student2));
-
+        List<Student> students = List.of(student1, student2);
+        studentRepository.saveAll(students);
         // Создаем факультет и сохраняем
-        Faculty faculty = new Faculty();
-        faculty.setName("Информатика");
-        facultyRepository.save(faculty);
+        String nameFaculty = "testFacultyName";
+        Long facultyId = 55L;
+        final String colorFaculty = "testFacultyColor";
+        Faculty facultyExtend = new Faculty();
+        facultyExtend.setId(facultyId);
+        facultyExtend.setName(nameFaculty);
+        facultyExtend.setColor(colorFaculty);
+        facultyRepository.save(facultyExtend);
 
-        // Вызываем POST-запрос на добавление студентов к факультету
-        String url = "/faculty/add/students/" + faculty.getId();
+        String url = "/faculty/add/students/" + facultyExtend.getId();
         ResponseEntity<Void> voidResponseEntity = template.postForEntity(url, List.of(student1, student2), Void.class);
-        ResponseEntity<List<Student>> responseGet = template.exchange(
-                getBaseUrlForStudents() + "/get/many?min=" + student1.getAge() + "&max=" + student2.getAge(),
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Student>>() {
-                }
-        );
-        assertEquals(HttpStatus.OK, voidResponseEntity.getStatusCode());
-        assertEquals(HttpStatus.OK, responseGet.getStatusCode());
-        assertNotNull(responseGet.getBody());
-        assertNotNull(responseGet.getBody().get(0).getName());
-        assertEquals(student1.getName(), responseGet.getBody().get(0).getName());
-        assertEquals(student2.getName(), responseGet.getBody().get(1).getName());
-//        responseGet.getBody().get(1).getName();
 
+        assertEquals(HttpStatus.OK, voidResponseEntity.getStatusCode());
+
+        HttpEntity<Faculty> requestCreatedFaculty = new HttpEntity<>(facultyExtend);
+        ResponseEntity<Faculty> responseSavedFaculty = template.exchange(
+                getBaseUrl() + "/get/" + facultyExtend.getId(),
+                HttpMethod.GET,
+                requestCreatedFaculty,
+                Faculty.class
+        );
+        assertEquals(HttpStatus.OK, responseSavedFaculty.getStatusCode());
+        assertNotNull(responseSavedFaculty.getBody());
+        assertEquals(facultyExtend.getName(), responseSavedFaculty.getBody().getName());
+        assertEquals(facultyExtend.getId(), responseSavedFaculty.getBody().getId());
 
     }
 
@@ -288,8 +298,7 @@ public class FacultyControllerTestRestTemplateTest {
 
         String url = "/faculty/add/students/" + faculty.getId();
         ResponseEntity<Void> voidResponseEntity = template.postForEntity(url, List.of(student1, student2), Void.class);
-
-
+        assertEquals(HttpStatus.OK, voidResponseEntity.getStatusCode());
         // Вызываем GET-запрос для получения студентов указанного факультета
         ResponseEntity<Student[]> response = template.getForEntity(
                 "/faculty/get/students/" + faculty.getId(), Student[].class);

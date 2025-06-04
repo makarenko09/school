@@ -20,13 +20,13 @@ public class StudentController {
     }
 
     @GetMapping("/get/many")
-    public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") short min, @RequestParam("max") short max) {
+    public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") int min, @RequestParam("max") int max) {
         return studentService.getStudentsAgeBetween(min, max);
     }
 
-    @GetMapping("/get/faculty/{id}")
-    public Faculty getStudentsWithFaculty(@PathVariable Long id) {
-        return studentService.getStudent(id).getFaculty();
+    @GetMapping("/get/faculty/{idStudent}")
+    public ResponseEntity<Faculty> getFacultyByStudent(@PathVariable Long idStudent) {
+        return ResponseEntity.ok(studentService.getStudent(idStudent).getFaculty());
     }
 
     @GetMapping("/get/many/{amount}")

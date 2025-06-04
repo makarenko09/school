@@ -12,7 +12,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import ru.hogwarts.school.controller.FacultyController;
 import ru.hogwarts.school.controller.StudentController;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ public class StudentControllerTestRestTemplateTest {
     private int port;
     @Autowired
     private StudentController controller;
+    @Autowired
+    private FacultyController facultyController;
     @Autowired
     private TestRestTemplate template;
 
@@ -163,6 +167,33 @@ public class StudentControllerTestRestTemplateTest {
         assertTrue(students.stream().anyMatch(s -> s.getName().equals(testStudent1.getName())));
         assertTrue(students.stream().anyMatch(s -> s.getName().equals(testStudent2.getName())));
 
+    }
+    @Test
+    public void getFacultyByStudent()throws Exception {
+        Faculty testFaculty = new Faculty();
+
+        testFaculty.setName("testName2");
+        testFaculty.setColor("63");
+        Faculty faculty = template.postForObject( "http://localhost:" + port + "/faculty" + "/create", testFaculty, Faculty.class);
+        assertThat(faculty).isNotNull();
+        Student testStudent1 = new Student();
+        testStudent1.setName("testName6");
+        testStudent1
+                .setAge(1351);
+        Student student = template.postForObject(getBaseUrl() + "/create", testStudent1, Student.class);
+        String url = "/faculty/add/students/" + faculty.getId();
+        ResponseEntity<Void> voidResponseEntity = template.postForEntity(url, List.of(student), Void.class);
+
+        assertEquals(HttpStatus.OK, voidResponseEntity.getStatusCode());
+
+
+        String url2 = "http://localhost:" + port + "/student/get/faculty/" + student.getId();
+        ResponseEntity<Faculty> response = template.getForEntity(url2, Faculty.class);
+
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getId()).isEqualTo(faculty.getId());
     }
     @Test
     void getStudentsWithAgeBetween() {

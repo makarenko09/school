@@ -24,7 +24,7 @@ public class StudentService {
         return repository.saveAll(students);
     }
 
-    public Collection<Student> getStudentsAgeBetween(short min, short max) {
+    public Collection<Student> getStudentsAgeBetween(int min, int max) {
     return repository.findByAgeBetween(min, max);
 }
     public Student getStudent(Long id) {
