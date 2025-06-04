@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -14,24 +15,19 @@ import java.util.List;
 public class FacultyController {
     private final FacultyService facultyService;
 
-    public FacultyController(FacultyService facultyService) {
-        this.facultyService = facultyService;
+    @PostMapping("/create")
+    public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
+        return ResponseEntity.ok(facultyService.createFaculty(faculty));
     }
 
-    @GetMapping("/get/many/{color}")
-    public List<Faculty> getFacultiesWitColor(@PathVariable String color) {
-        return facultyService.getFacultiesWithValueColor(color);
-    }
-
-    @GetMapping("/get/students/{facultyId}")
-    public ResponseEntity<List<Student>> getStudentsByFaculty(@PathVariable Long facultyId) {
-        List<Student> students = facultyService.getStudentsByFaculty(facultyId);
-        return ResponseEntity.ok(students);
+    @PostMapping("/create/many")
+    public Collection<Faculty> addFaculties(@RequestBody List<Faculty> faculties) {
+        return facultyService.createFaculties(faculties);
     }
 
     @PostMapping("/add/students/{facultyId}")
     public ResponseEntity<Void> addStudentsToFaculty(@PathVariable Long facultyId, @RequestBody List<Student> students) {
-        facultyService.addStudentsToFaculty(facultyId, students);
+        facultyService.putStudentsToFaculty(facultyId, students);
         return ResponseEntity.ok().build();
     }
 
@@ -40,14 +36,19 @@ public class FacultyController {
         return facultyService.getFaculty(id);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
-        return ResponseEntity.ok(facultyService.createFaculty(faculty));
+    public FacultyController(FacultyService facultyService) {
+        this.facultyService = facultyService;
     }
 
-    @PostMapping("/create/many")
-    public List<Faculty> addFaculties(@RequestBody List<Faculty> faculties) {
-        return facultyService.createFaculties(faculties);
+    @GetMapping("/get/many/{color}")
+    public Collection<Faculty> getFacultiesByColor(@PathVariable String color) {
+        return facultyService.getFacultiesWithValueColor(color);
+    }
+
+    @GetMapping("/get/students/{facultyId}")
+    public ResponseEntity<Collection<Student>> getStudentsOfFaculty(@PathVariable Long facultyId) {
+        Collection<Student> students = facultyService.getStudentsByFaculty(facultyId);
+        return ResponseEntity.ok(students);
     }
 
     @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})

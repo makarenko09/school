@@ -20,16 +20,26 @@ public class StudentService {
         return repository.save(student);
     }
 
-    public List<Student> createStudents(List<Student> students) {
+    public Collection<Student> createStudents(List<Student> students) {
         return repository.saveAll(students);
     }
 
-    public Collection<Student> getStudentsAgeBetween(int min, int max) {
-    return repository.findByAgeBetween(min, max);
-}
     public Student getStudent(Long id) {
         return repository.findById(id).orElseThrow(() -> new NoSuchObjectException(" - " + id + " does not exist"));
     }
+    public Collection<Student> getAllStudents() {
+        return repository.findAll();
+    }
+
+    public Collection<Student> getStudentsWithValueAge(int age) {
+        return repository.findAll().stream()
+                .filter(obj -> obj.getAge() == age)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<Student> getStudentsWithValuesAge(int min, int max) {
+    return repository.findByAgeBetween(min, max);
+}
 
     public Student updateStudent(Student student) {
         if (!repository.existsById(student.getId())) {
@@ -42,17 +52,6 @@ public class StudentService {
         Student objDeleted = getStudent(id);
         repository.delete(objDeleted);
         return objDeleted;
-    }
-
-
-    public Collection<Student> getAllStudents() {
-        return repository.findAll();
-    }
-
-    public Collection<Student> getStudentsWithValueAge(int age) {
-        return repository.findAll().stream()
-                .filter(obj -> obj.getAge() == age)
-                .collect(Collectors.toList());
     }
 
 }
