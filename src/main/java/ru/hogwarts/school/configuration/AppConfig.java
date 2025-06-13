@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AppConfig implements PortProvider {
-@Value("${server.port}")
+    @Value("${server.port}")
     private Integer port;
 
     @Override
