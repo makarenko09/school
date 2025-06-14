@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final StudentRepository repository;
 
-    Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(StudentRepository repository) {
         this.repository = repository;
