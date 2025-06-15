@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 @Service
 public class StudentService {
     private final StudentRepository repository;
+
+    private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(StudentRepository repository) {
         this.repository = repository;
@@ -25,7 +29,10 @@ public class StudentService {
     }
 
     public Student getStudent(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NoSuchObjectException(" - " + id + " does not exist"));
+        logger.info(" - try get student with id = {}", id);
+        Student student = repository.findById(id).orElseThrow(() -> new NoSuchObjectException(" - " + id + " does not exist"));
+        logger.info(" - this student with id '{}', is '{}'", id, student);
+        return student;
     }
 
     public Integer getCountOfStudentByName(){
@@ -37,6 +44,7 @@ public class StudentService {
     public List<Student> getFiveLateStudentsById(){
             return repository.getFiveLateStudentsById();
     }
+
     public Collection<Student> getAllStudents() {
         return repository.findAll();
     }

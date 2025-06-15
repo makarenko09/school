@@ -35,10 +35,50 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.4.3'
 	// https://mvnrepository.com/artifact/org.postgresql/postgresql
 	implementation 'org.postgresql:postgresql:42.7.5'
+	//add to project Spring AOP
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	// https://mvnrepository.com/artifact/org.liquibase/liquibase-core
 	implementation 'org.liquibase:liquibase-core'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+/* ---------- основной BootJar остаётся без изменений ---------- */
+
+def MAIN_CLASS = 'ru.hogwarts.school.SchoolApplication'
+def JAVA_VER   = JavaVersion.VERSION_17
+def RUNTIME_CP = sourceSets.main.runtimeClasspath
+
+/* ---------- dev JAR ----------------------------------------- */
+tasks.register('bootJarDev', BootJar) {
+	group       = 'build'
+	dependsOn   'classes'               // чтобы скомпилировались классы
+
+	archiveClassifier.set('dev')        // school‑…‑dev.jar
+	mainClass.set(MAIN_CLASS)
+	classpath          = RUNTIME_CP
+	targetJavaVersion  = JAVA_VER
+}
+
+/* ---------- additional JAR ---------------------------------- */
+tasks.register('bootJarAdditional', BootJar) {
+	group       = 'build'
+	dependsOn   'classes'
+
+	archiveClassifier.set('additional') // school‑…‑additional.jar
+	mainClass.set(MAIN_CLASS)
+	classpath          = RUNTIME_CP
+	targetJavaVersion  = JAVA_VER
+}
+
+/* ---------- собрать оба сразу ------------------------------- */
+tasks.register('bootJarAll') {
+	group       = 'build'
+	description = 'Build mono and poly-recording (dev + additional) executable JARs'
+	dependsOn   'bootJar','bootJarDev', 'bootJarAdditional'
 }
