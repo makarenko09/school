@@ -30,6 +30,21 @@ public class StudentController {
         return studentService.createStudents(students);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudent(id));
+    }
+
+    @GetMapping("/get/many")
+    public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") int min, @RequestParam("max") int max) {
+        return studentService.getStudentsWithValuesAge(min, max);
+    }
+
+    @GetMapping("/get/many/{age}")
+    public Collection<Student> getStudentsWithAge(@PathVariable int age) {
+        return studentService.getStudentsWithValueAge(age);
+    }
+
     @GetMapping("/get-count-by-studentName")
     public Integer getCountByStudentName() {
         return studentService.getCountOfStudentByName();
@@ -39,13 +54,10 @@ public class StudentController {
     public Integer getAVGAgeByStudentAge() {
         return studentService.getAverageAgeOfStudentsByAge();
     }
+
     @GetMapping("/get-late-students-by-studentId")
     public List<Student> getLateStudentsByStudentId() {
         return studentService.getFiveLateStudentsById();
-    }
-    @GetMapping("/get/many")
-    public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") short min, @RequestParam("max") short max) {
-        return studentService.getStudentsWithValuesAge(min, max);
     }
 
     @GetMapping("/get/faculty/{idStudent}")
@@ -53,14 +65,13 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudent(idStudent).getFaculty());
     }
 
-    @GetMapping("/get/many/{age}")
-    public Collection<Student> getStudentsWithAge(@PathVariable int age) {
-        return studentService.getStudentsWithValueAge(age);
+    @GetMapping("/get-students-with-values-of-A-&-up-case")
+    public ResponseEntity<Collection<Student>> getStudentsWithStartValueOfAAndUpCase() {
+       return ResponseEntity.ok(studentService.getStudentsWithSomeSet());
     }
-
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
-        return ResponseEntity.ok(studentService.getStudent(id));
+    @GetMapping("/get-average-age-by-students")
+    public ResponseEntity<Integer> getAverageAgeOfAllStudents() {
+        return ResponseEntity.ok(studentService.getAverageAgeOfAllStudents());
     }
 
     @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
