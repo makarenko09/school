@@ -15,6 +15,10 @@ import java.util.List;
 public class FacultyController {
     private final FacultyService facultyService;
 
+    public FacultyController(FacultyService facultyService) {
+        this.facultyService = facultyService;
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
         return ResponseEntity.ok(facultyService.createFaculty(faculty));
@@ -36,10 +40,6 @@ public class FacultyController {
         return facultyService.getFaculty(id);
     }
 
-    public FacultyController(FacultyService facultyService) {
-        this.facultyService = facultyService;
-    }
-
     @GetMapping("/get/many/{color}")
     public Collection<Faculty> getFacultiesByColor(@PathVariable String color) {
         return facultyService.getFacultiesWithValueColor(color);
@@ -49,6 +49,11 @@ public class FacultyController {
     public ResponseEntity<Collection<Student>> getStudentsOfFaculty(@PathVariable Long facultyId) {
         Collection<Student> students = facultyService.getStudentsByFaculty(facultyId);
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/get-longest-name-by-facultyName")
+    public ResponseEntity<String> getFacultyWithLongestName() {
+        return ResponseEntity.ok(facultyService.getLongestFacultyName());
     }
 
     @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})

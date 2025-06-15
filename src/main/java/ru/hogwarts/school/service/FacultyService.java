@@ -54,6 +54,10 @@ private final StudentRepository studentRepository;
         return studentRepository.findAllByFaculty(faculty);
     }
 
+    public String getLongestFacultyName() {
+        return repository.getLongestFacultyName();
+    }
+
     public Faculty updateFaculty(Faculty faculty) {
         if (!repository.existsById(faculty.getId())) {
             throw new NoSuchObjectException(" - " + faculty + " does not exist");
