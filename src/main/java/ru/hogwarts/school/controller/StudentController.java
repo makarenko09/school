@@ -1,13 +1,11 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
@@ -17,7 +15,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/someStudents/{amount}")
+    @GetMapping("/get/{amount}")
     public Collection<Student> getStudentsWithAge(@PathVariable int amount) {
         return studentService.getStudentsWithValueAge(amount);
     }
@@ -26,27 +24,24 @@ public class StudentController {
         return studentService.getStudent(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Student addStudent(@RequestBody Student student) {
         return studentService.createStudent(student);
     }
 
-    @PutMapping
+    @PostMapping("/create/all")
+    public List<Student> addStudents(@RequestBody List<Student> students) {
+        return studentService.createStudents(students);
+    }
+
+    @PutMapping("/update")
     public Student updateStudent(@RequestBody Student student) {
         return studentService.updateStudent(student);
     }
-//    @PutMapping
-//    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
-//        Student someObject = studentService.updateStudent(student);
-//        if (someObject == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(someObject);
-//    }
-    @DeleteMapping("/{id}")
-    public Student deleteStudent(@PathVariable Long id) {
-        return studentService.deleteStudent(id);
+
+    @DeleteMapping("/del/{id}")
+    public void deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
     }
-
-
 }
+

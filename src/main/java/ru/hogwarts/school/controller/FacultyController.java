@@ -5,6 +5,8 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.List;
+
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {
@@ -14,27 +16,32 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("/someFaculties/{color}")
+    @GetMapping("/get/{color}")
     public Collection<Faculty> getFacultiesWitColor(@PathVariable String color) {
         return facultyService.getFacultiesWithValueColor(color);
     }
     @GetMapping("/{id}")
-    public Faculty getFaculty(@PathVariable long id) {
+    public Faculty getFaculty(@PathVariable Long id) {
         return facultyService.getFaculty(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Faculty addFaculty(@RequestBody Faculty faculty) {
         return facultyService.createFaculty(faculty);
     }
 
-    @PutMapping
+    @PostMapping("/create/all")
+    public List<Faculty> addFaculties(@RequestBody List<Faculty> faculties) {
+        return facultyService.createFaculties(faculties);
+    }
+
+    @PutMapping("/update")
     public Faculty updateFaculty(@RequestBody Faculty faculty) {
         return facultyService.updateFaculty(faculty);
     }
 
-    @DeleteMapping("/{id}")
-    public Faculty deleteFaculty(@PathVariable long id) {
-        return facultyService.deleteFaculty(id);
+    @DeleteMapping("/del/{id}")
+    public void deleteFaculty(@PathVariable Long id) {
+        facultyService.deleteFaculty(id);
     }
 }

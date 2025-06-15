@@ -2,52 +2,50 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> studentsMap = new HashMap<>();
-    private long lastId = 0;
+    private final StudentRepository repository;
 
-    public Student createStudent(Student student) {
-        student.setId(++lastId);
-        studentsMap.put((this.lastId), student);
-        return student;
+    public StudentService(StudentRepository repository) {
+        this.repository = repository;
     }
 
-    public Student getStudent(long id) {
-        if (studentsMap.get(id) != null) {
-        return studentsMap.get(id);
-        } else {
-            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
-        }
+    public Student createStudent(Student student) {
+        return repository.save(student);
+    }
+
+    public List<Student> createStudents(List<Student> students) {
+        return repository.saveAll(students);
+    }
+
+    public Student getStudent(Long id) {
+        return repository.findById(id).orElseThrow(() -> new NoSuchSomeObjectException(" - " + id + " does not exist"));
     }
 
     public Student updateStudent(Student student) {
-        Student someObj = studentsMap.values().stream().filter(obj -> Objects.equals(obj.getId(), student.getId())).map(obj -> obj.newObject(student.getId(), student.getName(), student.getAge())).findFirst().orElseThrow(() -> new NoSuchSomeObjectException(" - " + student + " does not exist"));
-        studentsMap.put(student.getId(), someObj);
-        return studentsMap.get(student.getId());
+        if (repository.existsById(student.getId())) {
+            throw new NoSuchSomeObjectException(" - " + student + " does not exist");
+        }
+        return repository.save(student);
     }
 
-    public Student deleteStudent(long id) {
-        if (studentsMap.get(id) != null) {
-            return studentsMap.remove(id);
-        } else {
-            throw new NoSuchSomeObjectException(" - " + id + " does not exist");
-        }
+    public void deleteStudent(Long id) {
+        Student objDeleted = getStudent(id);
+        repository.delete(objDeleted);
     }
 
     public Collection<Student> getAllStudents() {
-        return studentsMap.values();
+        return repository.findAll();
     }
 
     public Collection<Student> getStudentsWithValueAge(int age) {
-        return studentsMap.values().stream()
+        return repository.findAll().stream()
                 .filter(obj -> obj.getAge() == age)
                 .collect(Collectors.toList());
     }
