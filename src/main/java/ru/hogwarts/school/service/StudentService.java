@@ -27,6 +27,16 @@ public class StudentService {
     public Student getStudent(Long id) {
         return repository.findById(id).orElseThrow(() -> new NoSuchObjectException(" - " + id + " does not exist"));
     }
+
+    public Integer getCountOfStudentByName(){
+            return repository.getCountOfStudentsByName();
+    }
+    public Integer getAverageAgeOfStudentsByAge(){
+            return repository.getAverageAgeOfStudentsByAge();
+    }
+    public List<Student> getFiveLateStudentsById(){
+            return repository.getFiveLateStudentsById();
+    }
     public Collection<Student> getAllStudents() {
         return repository.findAll();
     }
@@ -39,7 +49,7 @@ public class StudentService {
 
     public Collection<Student> getStudentsWithValuesAge(int min, int max) {
     return repository.findByAgeBetween(min, max);
-}
+    }
 
     public Student updateStudent(Student student) {
         if (!repository.existsById(student.getId())) {
@@ -53,5 +63,4 @@ public class StudentService {
         repository.delete(objDeleted);
         return objDeleted;
     }
-
 }

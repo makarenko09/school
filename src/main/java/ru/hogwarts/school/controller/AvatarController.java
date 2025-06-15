@@ -5,10 +5,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.io.IOException;
+import java.util.Collection;
 
 @RestController("/avatar")
 public class AvatarController {
@@ -25,7 +27,6 @@ public class AvatarController {
         avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }
-
     @GetMapping(value = "/{studentId}/avatar-from-file")
     public ResponseEntity<String> downloadAvatar(@PathVariable(value = "studentId") Long studentId, HttpServletResponse response) throws IOException {
         avatarService.downloadAvatarFromDir(studentId, response);
@@ -35,6 +36,12 @@ public class AvatarController {
     @GetMapping(value = "/{studentId}/avatar-from-db")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long studentId) {
         return avatarService.downloadAvatarFromDB(studentId);
+    }
+
+    @GetMapping
+    public Collection<Avatar> getAllAvatars(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return avatarService.getAllAvatarsByPage(page, size);
+
     }
 }
 
