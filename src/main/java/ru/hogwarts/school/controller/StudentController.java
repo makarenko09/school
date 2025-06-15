@@ -40,12 +40,12 @@ public class StudentController {
         return studentService.getAverageAgeOfStudentsByAge();
     }
     @GetMapping("/get-late-students-by-studentId")
-public List<Student> getLateStudentsByStudentId() {
+    public List<Student> getLateStudentsByStudentId() {
         return studentService.getFiveLateStudentsById();
     }
     @GetMapping("/get/many")
     public Collection<Student> getStudentsWithAgeBetween(@RequestParam("min") short min, @RequestParam("max") short max) {
-        return studentService.getStudentsAgeBetween(min, max);
+        return studentService.getStudentsWithValuesAge(min, max);
     }
 
     @GetMapping("/get/faculty/{idStudent}")

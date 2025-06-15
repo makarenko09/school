@@ -49,7 +49,7 @@ public class StudentService {
 
     public Collection<Student> getStudentsWithValuesAge(int min, int max) {
     return repository.findByAgeBetween(min, max);
-}
+    }
 
     public Student updateStudent(Student student) {
         if (!repository.existsById(student.getId())) {
