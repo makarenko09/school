@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,9 +22,9 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "faculty")
+    @OneToMany(mappedBy = "faculty", orphanRemoval = true)
     @JsonManagedReference
-    private List<Student> students;
+    private List<Student> students = new ArrayList<>();
 
     public List<Student> getStudents() {
         return students;
@@ -41,6 +43,10 @@ public class Faculty {
 
     public Faculty() {
 
+    }
+    public void addStudent(Student student) {
+        students.add(student);
+        student.setFaculty(this);
     }
 
     public Long getId() {
@@ -69,13 +75,15 @@ public class Faculty {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Faculty faculty)) return false;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color);
-    }
+        if ((this == o)) return true;
+        if (!(o == null || getClass() != o.getClass())) return false;
+        Faculty faculty = (Faculty) o;
 
+        return id!= null ? id.equals(faculty.id) : faculty.id == null;
+    }
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return id != null ? id.hashCode() : 0;
     }
 
     public Faculty newObject(Long id, String name, String color) {
