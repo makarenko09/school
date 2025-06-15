@@ -1,5 +1,6 @@
 package ru.hogwarts.school.configuration;
 
-public interface PortProvider {
+public interface InfoService {
     Integer getPort();
+    void calculateMillions();
 }
