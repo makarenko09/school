@@ -69,6 +69,7 @@ public class StudentController {
     public ResponseEntity<Collection<Student>> getStudentsWithStartValueOfAAndUpCase() {
        return ResponseEntity.ok(studentService.getStudentsWithSomeSet());
     }
+
     @GetMapping("/get-average-age-by-students")
     public ResponseEntity<Integer> getAverageAgeOfAllStudents() {
         return ResponseEntity.ok(studentService.getAverageAgeOfAllStudents());

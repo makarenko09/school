@@ -11,8 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.Integer.valueOf;
-
 @Service
 public class StudentService {
     private final StudentRepository repository;
@@ -38,16 +36,16 @@ public class StudentService {
         return student;
     }
 
-    public Integer getCountOfStudentByName(){
-            return repository.getCountOfStudentsByName();
+    public Integer getCountOfStudentByName() {
+        return repository.getCountOfStudentsByName();
     }
 
-    public Integer getAverageAgeOfStudentsByAge(){
-            return repository.getAverageAgeOfStudentsByAge();
+    public Integer getAverageAgeOfStudentsByAge() {
+        return repository.getAverageAgeOfStudentsByAge();
     }
 
-    public List<Student> getFiveLateStudentsById(){
-            return repository.getFiveLateStudentsById();
+    public List<Student> getFiveLateStudentsById() {
+        return repository.getFiveLateStudentsById();
     }
 
     public Collection<Student> getAllStudents() {
@@ -61,7 +59,7 @@ public class StudentService {
     }
 
     public Collection<Student> getStudentsWithValuesAge(int min, int max) {
-    return repository.findByAgeBetween(min, max);
+        return repository.findByAgeBetween(min, max);
     }
 
     public Collection<Student> getStudentsWithSomeSet() {
