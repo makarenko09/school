@@ -1,8 +1,7 @@
 package ru.hogwarts.school.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -11,6 +10,14 @@ import java.util.Objects;
         @Id
         @GeneratedValue
         private Long id;
+        @ManyToOne
+        @JoinColumn(name = "faculty_id")
+        @JsonBackReference
+        private Faculty faculty;
+
+        public Faculty getFaculty() {
+            return faculty;
+        }
 
         public Student(String name, int age) {
             this.name = name;
@@ -62,6 +69,11 @@ import java.util.Objects;
         public boolean equals(Object o) {
             if (!(o instanceof Student student)) return false;
             return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name);
+        }
+
+        @Override
+        public String toString() {
+            return "Student{" + "id=" + id + ", faculty=" + faculty + ", name='" + name + '\'' + ", age=" + age + '}';
         }
 
         @Override

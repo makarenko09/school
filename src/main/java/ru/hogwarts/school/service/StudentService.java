@@ -1,7 +1,9 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
@@ -24,6 +26,9 @@ public class StudentService {
         return repository.saveAll(students);
     }
 
+    public Collection<Student> getStudentsAgeBetween(short min, short max) {
+    return repository.findByAgeBetween(min, max);
+}
     public Student getStudent(Long id) {
         return repository.findById(id).orElseThrow(() -> new NoSuchSomeObjectException(" - " + id + " does not exist"));
     }
@@ -39,6 +44,7 @@ public class StudentService {
         Student objDeleted = getStudent(id);
         repository.delete(objDeleted);
     }
+
 
     public Collection<Student> getAllStudents() {
         return repository.findAll();
