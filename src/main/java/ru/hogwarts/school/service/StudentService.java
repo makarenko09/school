@@ -2,23 +2,31 @@ package ru.hogwarts.school.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
     private final StudentRepository repository;
+    private final ThreadPoolTaskExecutor studentPrintExecutor;
 
     private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
-    public StudentService(StudentRepository repository) {
+    public StudentService(StudentRepository repository, ThreadPoolTaskExecutor studentPrintExecutor) {
         this.repository = repository;
+        this.studentPrintExecutor = studentPrintExecutor;
     }
 
     public Student createStudent(Student student) {
@@ -81,6 +89,19 @@ public class StudentService {
                 .getAverage();
         return (Integer) (int) average;
     }
+
+    public Collection<Student>  getStudentByPage(Integer pageNumber, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
+       return repository.findAll(pageRequest).getContent();
+    }
+
+    public List<String> getNamesByPage(int page, int size) {
+        return getStudentByPage(page, size)
+                .stream()
+                .map(Student::getName)
+                .toList();
+    }
+
 
     public Student updateStudent(Student student) {
         if (!repository.existsById(student.getId())) {

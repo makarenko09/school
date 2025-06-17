@@ -1,10 +1,12 @@
 package ru.hogwarts.school.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.service.StudentParallelPrinter;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
@@ -12,12 +14,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/student")
+@RequiredArgsConstructor
 public class StudentController {
     private final StudentService studentService;
-
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
 
     @PostMapping("/create")
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
@@ -73,6 +72,13 @@ public class StudentController {
     @GetMapping("/get-average-age-by-students")
     public ResponseEntity<Integer> getAverageAgeOfAllStudents() {
         return ResponseEntity.ok(studentService.getAverageAgeOfAllStudents());
+    }
+
+    private final StudentParallelPrinter parallelPrinter;
+    @GetMapping("/print-parallel")
+    public Collection<String> getStudents(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+
+        return parallelPrinter.printParallel(page, size);
     }
 
     @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
