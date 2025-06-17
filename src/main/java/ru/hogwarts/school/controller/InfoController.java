@@ -17,7 +17,7 @@ public class InfoController {
 
     @GetMapping("/get-int-improve-with-streamAPI")
     public void doingSomethingAfter() {
-        InfoService.calculateMillions();
+        InfoService.calculateSomeAnyInt();
     }
 
     @GetMapping

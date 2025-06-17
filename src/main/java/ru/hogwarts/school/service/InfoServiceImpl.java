@@ -22,7 +22,7 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    public void calculateMillions() {
+    public void calculateSomeAnyInt() {
         int limit = 10_000_000;
         doingSomethingBefore(limit);
         doingSomethingAfterWithLongStream(limit);
