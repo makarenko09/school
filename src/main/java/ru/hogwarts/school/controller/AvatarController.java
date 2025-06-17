@@ -27,6 +27,7 @@ public class AvatarController {
         avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/{studentId}/avatar-from-file")
     public ResponseEntity<String> downloadAvatar(@PathVariable(value = "studentId") Long studentId, HttpServletResponse response) throws IOException {
         avatarService.downloadAvatarFromDir(studentId, response);

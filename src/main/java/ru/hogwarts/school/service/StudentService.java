@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,14 +36,16 @@ public class StudentService {
         return student;
     }
 
-    public Integer getCountOfStudentByName(){
-            return repository.getCountOfStudentsByName();
+    public Integer getCountOfStudentByName() {
+        return repository.getCountOfStudentsByName();
     }
-    public Integer getAverageAgeOfStudentsByAge(){
-            return repository.getAverageAgeOfStudentsByAge();
+
+    public Integer getAverageAgeOfStudentsByAge() {
+        return repository.getAverageAgeOfStudentsByAge();
     }
-    public List<Student> getFiveLateStudentsById(){
-            return repository.getFiveLateStudentsById();
+
+    public List<Student> getFiveLateStudentsById() {
+        return repository.getFiveLateStudentsById();
     }
 
     public Collection<Student> getAllStudents() {
@@ -56,7 +59,27 @@ public class StudentService {
     }
 
     public Collection<Student> getStudentsWithValuesAge(int min, int max) {
-    return repository.findByAgeBetween(min, max);
+        return repository.findByAgeBetween(min, max);
+    }
+
+    public Collection<Student> getStudentsWithSomeSet() {
+        List<Student> collect = getAllStudents().stream()
+                .parallel()
+                .filter(i -> i.getName().matches("^S.*"))
+                .peek(i -> i.setName(i.getName().toUpperCase()))
+                .sorted(Comparator.comparing(Student::getName))
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    public Integer getAverageAgeOfAllStudents() {
+        double average = getAllStudents().stream()
+                .parallel()
+                .map(i -> i.getAge())
+                .mapToInt(Integer::intValue)
+                .summaryStatistics()
+                .getAverage();
+        return (Integer) (int) average;
     }
 
     public Student updateStudent(Student student) {

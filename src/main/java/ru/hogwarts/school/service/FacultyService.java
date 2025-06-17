@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class FacultyService {
     private final FacultyRepository repository;
-private final StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     public FacultyService(FacultyRepository repository, StudentRepository studentRepository) {
         this.repository = repository;
@@ -52,6 +52,10 @@ private final StudentRepository studentRepository;
         Faculty faculty = repository.findById(facultyId)
                 .orElseThrow(() -> new NoSuchObjectException(" - " + facultyId + " does not exist"));
         return studentRepository.findAllByFaculty(faculty);
+    }
+
+    public String getLongestFacultyName() {
+        return repository.getLongestFacultyName();
     }
 
     public Faculty updateFaculty(Faculty faculty) {
