@@ -102,7 +102,6 @@ public class StudentService {
                 .toList();
     }
 
-
     public Student updateStudent(Student student) {
         if (!repository.existsById(student.getId())) {
             throw new NoSuchObjectException(" - " + student + " does not exist");
