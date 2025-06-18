@@ -76,9 +76,8 @@ public class StudentController {
 
     private final StudentParallelPrinter parallelPrinter;
     @GetMapping("/print-parallel")
-    public Collection<String> getStudents(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-
-        return parallelPrinter.printParallel(page, size);
+    public Collection<String> getStudents(@RequestParam("pageStart") Integer page, @RequestParam("size") Integer size, @RequestParam("pageCount") Integer pageCount) {
+        return parallelPrinter.printParallel(page, size,pageCount);
     }
 
     @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
