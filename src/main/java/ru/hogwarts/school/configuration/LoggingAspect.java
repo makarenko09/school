@@ -22,9 +22,7 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();
         Object[] args = joinPoint.getArgs();
-        String argumentTypes = Arrays.stream(args)
-                .map(arg -> arg != null ? arg.getClass().getSimpleName() : "null")
-                .collect(Collectors.joining(", "));
+        String argumentTypes = Arrays.stream(args).map(arg -> arg != null ? arg.getClass().getSimpleName() : "null").collect(Collectors.joining(", "));
         logger.info(" - this calling (parent) method = {}", methodName);
         logger.info(" - calling {}.{}() with input args = {} (from {}.class)", className, methodName, args, argumentTypes);
     }
@@ -36,6 +34,5 @@ public class LoggingAspect {
         Object[] args = joinPoint.getArgs();
         logger.error(" - exception in {}.{}(), exception = {}", className, methodName, ex.toString());
     }
-
 }
 

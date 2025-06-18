@@ -39,20 +39,14 @@ public class InfoServiceImpl implements InfoService {
 
     public void doingSomethingBefore(int limit) {
         long start = System.currentTimeMillis();
-        int sum = Stream
-                .iterate(1, a -> a + 1)
-                .limit(limit)
-                .reduce(0, (a, b) -> a + b);
+        int sum = Stream.iterate(1, a -> a + 1).limit(limit).reduce(0, (a, b) -> a + b);
         long duration = System.currentTimeMillis() - start;
         logger.info("⏱ calling (parent) method executed in {} ms", duration);
     }
 
     public void doingSomethingAfterWithLongStreamAndParallel(int limit) {
         long start = System.currentTimeMillis();
-        long sum = LongStream
-                .range(1, limit)
-                .parallel()
-                .sum();
+        long sum = LongStream.range(1, limit).parallel().sum();
         long duration = System.currentTimeMillis() - start;
         logger.info("⏱ calling (parent) method executed in {} ms", duration);
 
@@ -60,19 +54,14 @@ public class InfoServiceImpl implements InfoService {
 
     public void doingSomethingAfterWithLongStream(int limit) {
         long start = System.currentTimeMillis();
-        long sum = LongStream
-                .range(1, limit)
-                .sum();
+        long sum = LongStream.range(1, limit).sum();
         long duration = System.currentTimeMillis() - start;
         logger.info("⏱ calling (parent) method executed in {} ms", duration);
     }
 
     public void doingSomethingAfterWithDoubleStream(int limit) {
         long start = System.currentTimeMillis();
-        double sum = DoubleStream
-                .iterate(1, a -> a + 1.0)
-                .limit(limit)
-                .reduce(0, Double::sum);
+        double sum = DoubleStream.iterate(1, a -> a + 1.0).limit(limit).reduce(0, Double::sum);
         long duration = System.currentTimeMillis() - start;
         logger.info("⏱ calling (parent) method executed in {} ms", duration);
     }
@@ -87,13 +76,10 @@ public class InfoServiceImpl implements InfoService {
 
     public long doingSomethingAfterWithLongStreamThroIterate(int limit) {
         long start = System.currentTimeMillis();
-        long sum = LongStream
-                .iterate(0, a -> a + 1)
-                .limit(limit + 1) // От 0 до limit включительно
+        long sum = LongStream.iterate(0, a -> a + 1).limit(limit + 1) // От 0 до limit включительно
                 .sum();
         long duration = System.currentTimeMillis() - start;
         logger.info("⏱ calling (parent) method executed in {} ms", duration);
         return sum;
     }
-
 }

@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+//import lombok.RequiredArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StudentController {
     private final StudentService studentService;
+    private final StudentParallelPrinter parallelPrinter;
 
     @PostMapping("/create")
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
@@ -66,7 +68,7 @@ public class StudentController {
 
     @GetMapping("/get-students-with-values-of-A-&-up-case")
     public ResponseEntity<Collection<Student>> getStudentsWithStartValueOfAAndUpCase() {
-       return ResponseEntity.ok(studentService.getStudentsWithSomeSet());
+        return ResponseEntity.ok(studentService.getStudentsWithSomeSet());
     }
 
     @GetMapping("/get-average-age-by-students")
@@ -74,17 +76,16 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getAverageAgeOfAllStudents());
     }
 
-    private final StudentParallelPrinter parallelPrinter;
     @GetMapping("/print-parallel")
     public Collection<String> getStudentsParallel(@RequestParam("pageStart") Integer page, @RequestParam("size") Integer size, @RequestParam("pageCount") Integer pageCount) {
-        final boolean sync = true;
-        return parallelPrinter.printParallel(page, size,pageCount, sync);
+        final boolean sync = false;
+        return parallelPrinter.printParallel(page, size, pageCount, sync);
     }
 
     @GetMapping("/print-synchronized")
     public Collection<String> getStudentsSynchronized(@RequestParam("pageStart") Integer page, @RequestParam("size") Integer size, @RequestParam("pageCount") Integer pageCount) {
         final boolean sync = true;
-        return parallelPrinter.printParallel(page, size,pageCount,sync);
+        return parallelPrinter.printParallel(page, size, pageCount, sync);
     }
 
     @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})

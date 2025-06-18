@@ -44,12 +44,7 @@ public class AvatarService {
         Path filePath = Path.of(avatarsDir, "Student(" + "id=" + student.getId() + ", name='" + student.getName() + "'" + ", age=" + student.getAge() + ')' + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
-        try (
-                InputStream is = avatarFile.getInputStream();
-                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
-        ) {
+        try (InputStream is = avatarFile.getInputStream(); OutputStream os = Files.newOutputStream(filePath, CREATE_NEW); BufferedInputStream bis = new BufferedInputStream(is, 1024); BufferedOutputStream bos = new BufferedOutputStream(os, 1024)) {
             bis.transferTo(bos);
         }
         Avatar avatar = findAvatar(studentId);
@@ -73,10 +68,7 @@ public class AvatarService {
         Avatar avatar = findAvatar(studentId);
 
         Path filePath = Path.of(avatar.getFilePath());
-        try (
-                InputStream is = Files.newInputStream(filePath);
-                OutputStream os = httpHeaders.getOutputStream()
-        ) {
+        try (InputStream is = Files.newInputStream(filePath); OutputStream os = httpHeaders.getOutputStream()) {
             httpHeaders.setStatus(200);
             httpHeaders.setContentType(avatar.getMediaType());
             httpHeaders.setContentLength((int) avatar.getFileSize());
@@ -93,8 +85,7 @@ public class AvatarService {
     }
 
     public Collection<Avatar> getAllAvatarsByPage(Integer pageNumber, Integer pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
     }
 }
-
