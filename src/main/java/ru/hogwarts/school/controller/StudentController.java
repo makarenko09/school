@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-//import lombok.RequiredArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,7 @@ import java.util.List;
 public class StudentController {
     private final StudentService studentService;
     private final StudentParallelPrinter parallelPrinter;
+
 
     @PostMapping("/create")
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {

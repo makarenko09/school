@@ -12,6 +12,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -21,7 +23,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
+@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentControllerTestRestTemplateTest {
 
@@ -42,17 +44,22 @@ public class StudentControllerTestRestTemplateTest {
     }
 
     @Test
-    void createOneStudentTest() {
+    public void createOneStudentTest() {
         Student testStudent = new Student();
-        testStudent.setName("testName1");
+        testStudent.setName("testName47");
         testStudent.setAge(48);
 
         Student expectedTestStudent = template.postForObject(getBaseUrl() + "/create", testStudent, Student.class);
 
         Assertions.assertThat(expectedTestStudent).isNotNull();
         assertNotNull(expectedTestStudent.getClass());
+        assertThat(expectedTestStudent.getName()).isEqualTo(testStudent.getName());
 
-        HttpEntity<Student> request = new HttpEntity<>(testStudent);
+        Student testStudent2 = new Student();
+        testStudent2.setName("testName57");
+        testStudent2.setAge(58);
+
+        HttpEntity<Student> request = new HttpEntity<>(testStudent2);
         ResponseEntity<Student> response = template.exchange(
                 getBaseUrl() + "/create",
                 HttpMethod.POST,
@@ -62,8 +69,7 @@ public class StudentControllerTestRestTemplateTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("testName1", response.getBody().getName());
-        assertEquals(expectedTestStudent.getName(), response.getBody().getName());
+        assertEquals("testName57", response.getBody().getName());
     }
 
     @Test

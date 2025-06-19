@@ -14,6 +14,7 @@ import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
+import ru.hogwarts.school.service.StudentParallelPrinter;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
@@ -38,28 +39,30 @@ public class StudentWebMvcTest {
     private StudentService studentService;
     @MockitoBean
     private StudentRepository studentRepository;
-    //    @MockitoBean
-    //    private FacultyService facultyService;
-    //    @MockitoBean
-    //    private FacultyRepository facultyRepository;
+    //        @MockitoBean
+//        private FacultyService facultyService;
+//        @MockitoBean
+//        private FacultyRepository facultyRepository;
+    @MockitoBean
+    private StudentParallelPrinter parallelPrinter;
 
 
     @Test
     public void createOneStudentTest() throws Exception {
-        String name = "testName";
+        String name = "testName51";
         final Long id = 1L;
-        final int age = 41;
-        JSONObject studentJsonActual = new JSONObject();
-        studentJsonActual.put("name", name);
-        studentJsonActual.put("age", age);
+        final int age = 53;
 
         Student studentExtend = new Student();
         studentExtend.setId(id);
         studentExtend.setName(name);
         studentExtend.setAge(age);
 
-        when(studentService.createStudent(any(Student.class))).thenReturn(studentExtend);
+        JSONObject studentJsonActual = new JSONObject();
+        studentJsonActual.put("name", name);
+        studentJsonActual.put("age", age);
 
+        when(studentService.createStudent(any(Student.class))).thenReturn(studentExtend);
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/student/create")
                         .content(studentJsonActual.toString())
@@ -148,8 +151,7 @@ public class StudentWebMvcTest {
         when(studentService.getStudentsWithValueAge(age)).thenReturn(students);
         when(studentRepository.findAll()).thenReturn(students);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student/get/many/41") // ✅ исправлено
+        mockMvc.perform(MockMvcRequestBuilders.get("/student/get/many/41")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(id))
@@ -185,7 +187,8 @@ public class StudentWebMvcTest {
         when(studentService.getStudentsWithValuesAge(41, 52)).thenReturn(students);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student/get/many?min=41&max=52")  // ✅ исправлен URL
+//                        .get("/student/get/many?min=41&max=52")
+                        .get("/student/get/many?min={min}&max={max}", age, age2)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(id))
@@ -197,8 +200,7 @@ public class StudentWebMvcTest {
     }
 
     @Test
-    void getFacultyByStudentTest() throws Exception {
-        // --- Подготовка факультета ---
+    public void getFacultyByStudentTest() throws Exception {
         String nameFaculty = "testFacultyName";
         Long facultyId = 55L;
         final String colorFaculty = "testFacultyColor";
@@ -217,18 +219,49 @@ public class StudentWebMvcTest {
         studentExtend.setId(idStudent);
         studentExtend.setName(name);
         studentExtend.setAge(age);
-        studentExtend.setFaculty(facultyExtend); // связываем
+        studentExtend.setFaculty(facultyExtend);
 
-        // --- Моки ---
+
         when(studentService.getStudent(anyLong())).thenReturn(studentExtend);
 
-        // --- Тест запроса ---
+
         mockMvc.perform(get("/student/get/faculty/{idStudent}", idStudent)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(facultyId))
                 .andExpect(jsonPath("$.name").value(facultyExtend.getName()))
                 .andExpect(jsonPath("$.color").value(facultyExtend.getColor()));
+    }
+
+    @Test
+    public void getStudentsParallelTest() throws Exception {
+        String name = "testName240";
+        final Long id = 1L;
+        final int age = 41;
+        Student studentExtend = new Student();
+        studentExtend.setId(id);
+        studentExtend.setName(name);
+        studentExtend.setAge(age);
+        List<String> stringNameStudent = List.of(studentExtend.getName());
+
+        when(parallelPrinter.printParallel(any(Integer.class), any(Integer.class), any(Integer.class), any(Boolean.class))).thenReturn(stringNameStudent);
+        mockMvc.perform(MockMvcRequestBuilders.get("/student/print-parallel?pageStart={pageStart}&size={size}&pageCount={pageCount}", 1, 1, 1).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$[0]").value(name));
+    }
+
+    @Test
+    public void getStudentsSynchronizedTest() throws Exception {
+        String name = "testName240";
+        final Long id = 1L;
+        final int age = 41;
+        Student studentExtend = new Student();
+        studentExtend.setId(id);
+        studentExtend.setName(name);
+        studentExtend.setAge(age);
+        List<String> stringNameStudent = List.of(studentExtend.getName());
+
+        when(parallelPrinter.printParallel(any(Integer.class), any(Integer.class), any(Integer.class), any(Boolean.class))).thenReturn(stringNameStudent);
+        mockMvc.perform(MockMvcRequestBuilders.get("/student/print-synchronized?pageStart={pageStart}&size={size}&pageCount={pageCount}", 1, 1, 1).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$[0]").value(name));
     }
 
     @Test
@@ -307,8 +340,6 @@ public class StudentWebMvcTest {
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.age").value(age));
-
-//        verify(studentRepository).delete(id);
 
         when(studentService.deleteStudent(any(Long.class))).thenReturn(studentExtend);
         when(studentService.getStudent(id)).thenReturn(studentExtend);

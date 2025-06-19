@@ -3,8 +3,6 @@ package ru.hogwarts.school.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
     @Entity
     public class Student {
         @Id
@@ -78,11 +76,6 @@ import java.util.Objects;
 
         public void setAge(int age) {
             this.age = age;
-        }
-
-        @Override
-        public String toString() {
-            return "Student{" + "id=" + id + ", faculty=" + faculty + ", name='" + name + '\'' + ", age=" + age + '}';
         }
 
         @Override
