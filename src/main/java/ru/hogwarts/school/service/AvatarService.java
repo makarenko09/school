@@ -3,6 +3,8 @@ package ru.hogwarts.school.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +31,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 public class AvatarService {
     private final AvatarRepository avatarRepository;
     private final StudentRepository studentRepository;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
@@ -44,7 +47,12 @@ public class AvatarService {
         Path filePath = Path.of(avatarsDir, "Student(" + "id=" + student.getId() + ", name='" + student.getName() + "'" + ", age=" + student.getAge() + ')' + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
-        try (InputStream is = avatarFile.getInputStream(); OutputStream os = Files.newOutputStream(filePath, CREATE_NEW); BufferedInputStream bis = new BufferedInputStream(is, 1024); BufferedOutputStream bos = new BufferedOutputStream(os, 1024)) {
+        try (
+                InputStream is = avatarFile.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
+        ) {
             bis.transferTo(bos);
         }
         Avatar avatar = findAvatar(studentId);
@@ -57,7 +65,7 @@ public class AvatarService {
     }
 
     private Avatar findAvatar(Long studentId) {
-        return avatarRepository.findAvatarByStudentId(studentId).orElse(new Avatar());
+        return avatarRepository.findAvatarByStudentId(studentId).orElseThrow(() -> new NoSuchObjectException(" - avatar with studentId " + studentId + " does not exist"));
     }
 
     private String getExtensions(String fileName) {
@@ -68,7 +76,26 @@ public class AvatarService {
         Avatar avatar = findAvatar(studentId);
 
         Path filePath = Path.of(avatar.getFilePath());
-        try (InputStream is = Files.newInputStream(filePath); OutputStream os = httpHeaders.getOutputStream()) {
+
+        boolean regularFile = Files.isRegularFile(filePath);
+        boolean exists = Files.exists(filePath);
+        if (!exists && !regularFile) {
+            logger.error(" - avatar fom path is not_found, exist - {}, regularFile - {}", exists, regularFile);
+            throw new NoSuchObjectException(" - beforehand added avatar on dir " + filePath.getFileName() + " does not exist");
+//            httpHeaders.sendError(404, "File not found");
+//            return;
+        }
+        if (!Files.isReadable(filePath)) {
+            logger.error(" - rights on avatar have been lost");
+            httpHeaders.sendError(403, "File unreadable");
+            return;
+        }
+
+        try (
+                InputStream is = Files.newInputStream(filePath);
+                OutputStream os = httpHeaders.getOutputStream()
+        ) {
+            logger.info(" - avatar is present on: {}", filePath);
             httpHeaders.setStatus(200);
             httpHeaders.setContentType(avatar.getMediaType());
             httpHeaders.setContentLength((int) avatar.getFileSize());
