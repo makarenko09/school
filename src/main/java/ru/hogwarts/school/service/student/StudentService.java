@@ -1,13 +1,13 @@
-package ru.hogwarts.school.service;
+package ru.hogwarts.school.service.student;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
+import ru.hogwarts.school.service.NoSuchObjectException;
 
 import java.util.Collection;
 import java.util.Comparator;

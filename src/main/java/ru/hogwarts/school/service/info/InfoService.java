@@ -1,4 +1,4 @@
-package ru.hogwarts.school.configuration;
+package ru.hogwarts.school.service.info;
 
 public interface InfoService {
     Integer getPort();

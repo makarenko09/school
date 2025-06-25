@@ -1,10 +1,9 @@
-package ru.hogwarts.school.service;
+package ru.hogwarts.school.service.info;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.hogwarts.school.configuration.InfoService;
 
 import java.util.stream.DoubleStream;
 import java.util.stream.LongStream;

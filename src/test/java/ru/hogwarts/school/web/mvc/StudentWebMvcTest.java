@@ -14,8 +14,8 @@ import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.StudentParallelPrinter;
-import ru.hogwarts.school.service.StudentService;
+import ru.hogwarts.school.service.student.StudentParallelPrinter;
+import ru.hogwarts.school.service.student.StudentService;
 
 import java.util.List;
 import java.util.Optional;

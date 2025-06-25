@@ -1,4 +1,4 @@
-package ru.hogwarts.school.service;
+package ru.hogwarts.school.service.student;
 
 //import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -13,7 +13,6 @@ import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
 @Service
-
 public class StudentParallelPrinter {
     public StudentParallelPrinter(StudentService studentService) {
         this.studentService = studentService;
