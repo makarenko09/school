@@ -3,7 +3,7 @@ package ru.hogwarts.school.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Avatar {
+public class Avatar implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
