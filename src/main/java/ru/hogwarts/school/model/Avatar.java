@@ -2,6 +2,8 @@ package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 public class Avatar implements Serializable {
     @Id

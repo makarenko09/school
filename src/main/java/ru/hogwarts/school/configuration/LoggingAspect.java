@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Aspect
@@ -22,9 +23,20 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();
         Object[] args = joinPoint.getArgs();
-        String argumentTypes = Arrays.stream(args).map(arg -> arg != null ? arg.getClass().getSimpleName() : "null").collect(Collectors.joining(", "));
+        boolean isArgsEmpty = (args == null || args.length == 0);
+
+        BiFunction<Object[], Boolean, String> logTail = (arguments, empty) -> {
+            if (empty) {
+                return "with empty args";
+            } else {
+                String argumentTypes = Arrays.stream(arguments).map(arg -> arg.getClass().getSimpleName()).collect(Collectors.joining(", "));
+                return String.format("with input args = %s (from %s.class)", Arrays.toString(arguments), argumentTypes);
+            }
+        };
+
         logger.info(" - this calling (parent) method = {}", methodName);
-        logger.info(" - calling {}.{}() with input args = {} (from {}.class)", className, methodName, args, argumentTypes);
+        logger.info(" - calling {}.{}() {}", className, methodName, logTail.apply(args, isArgsEmpty));
+
     }
 
     @AfterThrowing(pointcut = "execution(* ru.hogwarts.school.service..*(..))", throwing = "ex")
