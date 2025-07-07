@@ -2,8 +2,10 @@ package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
-public class Avatar {
+public class Avatar implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
@@ -57,5 +59,4 @@ public class Avatar {
     public void setId(Long id) {
         this.id = id;
     }
-
 }

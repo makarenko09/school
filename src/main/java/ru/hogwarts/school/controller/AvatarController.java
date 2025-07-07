@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.AvatarService;
-import ru.hogwarts.school.service.StudentService;
+import ru.hogwarts.school.service.student.StudentService;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -27,6 +27,7 @@ public class AvatarController {
         avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/{studentId}/avatar-from-file")
     public ResponseEntity<String> downloadAvatar(@PathVariable(value = "studentId") Long studentId, HttpServletResponse response) throws IOException {
         avatarService.downloadAvatarFromDir(studentId, response);
@@ -44,4 +45,3 @@ public class AvatarController {
 
     }
 }
-

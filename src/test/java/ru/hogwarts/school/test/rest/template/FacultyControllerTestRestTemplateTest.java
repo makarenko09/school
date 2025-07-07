@@ -57,27 +57,24 @@ public class FacultyControllerTestRestTemplateTest {
     @Test
     void createOneFacultyTest() {
         Faculty testFaculty = new Faculty();
-        testFaculty.setName("testName1");
+        testFaculty.setName("testName60");
         testFaculty.setColor("61");
 
         Faculty expectedTestFaculty = template.postForObject(getBaseUrl() + "/create", testFaculty, Faculty.class);
         Assertions.assertThat(expectedTestFaculty).isNotNull();
         assertNotNull(expectedTestFaculty.getClass());
 
-        HttpEntity<Faculty> request = new HttpEntity<>(testFaculty);
-        ResponseEntity<Faculty> response = template.exchange(
-                getBaseUrl() + "/create",
-                HttpMethod.POST,
-                request,
-                Faculty.class
-        );
+        Faculty testFaculty2 = new Faculty();
+        testFaculty2.setName("testName68");
+        testFaculty2.setColor("69");
+
+        HttpEntity<Faculty> request = new HttpEntity<>(testFaculty2);
+        ResponseEntity<Faculty> response = template.exchange(getBaseUrl() + "/create", HttpMethod.POST, request, Faculty.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        Faculty faculty = response.getBody();
-        assertEquals(faculty.getName(), expectedTestFaculty.getName());
-        assertEquals("testName1", response.getBody().getName());
-        assertEquals(expectedTestFaculty.getName(), response.getBody().getName());
+        assertEquals("testName68", response.getBody().getName());
+        assertEquals("69", response.getBody().getColor());
     }
 
     @Test
@@ -117,20 +114,19 @@ public class FacultyControllerTestRestTemplateTest {
 
         studentRepository.saveAll(students);
 
-        String nameFaculty = "testFacultyName4";
-        Long facultyId = 55L;
-        final String colorFaculty = "testFacultyColor1";
+        String nameFaculty = "testFacultyName122";
+//        Long facultyId = 123L;
+        final String colorFaculty = "testFacultyColor124";
         Faculty facultyExtend = new Faculty();
-        facultyExtend.setId(facultyId);
+//        facultyExtend.setId(facultyId);
         facultyExtend.setName(nameFaculty);
         facultyExtend.setColor(colorFaculty);
 
         facultyRepository.save(facultyExtend);
 
         String url = "/faculty/add/students/" + facultyExtend.getId();
-        ResponseEntity<Void> voidResponseEntity = template.postForEntity(url, List.of(student1, student2), Void.class);
 
-        assertEquals(HttpStatus.OK, voidResponseEntity.getStatusCode());
+        assertEquals(HttpStatus.OK, (template.postForEntity(url, List.of(student1, student2), Void.class)).getStatusCode());
 
         HttpEntity<Faculty> requestCreatedFaculty = new HttpEntity<>(facultyExtend);
         ResponseEntity<Faculty> responseSavedFaculty = template.exchange(getBaseUrl() + "/get/" + facultyExtend.getId(), HttpMethod.GET, requestCreatedFaculty, Faculty.class);
@@ -148,23 +144,13 @@ public class FacultyControllerTestRestTemplateTest {
         testFaculty.setColor("148");
 
         HttpEntity<Faculty> request = new HttpEntity<>(testFaculty);
-        ResponseEntity<Faculty> response = template.exchange(
-                getBaseUrl() + "/create",
-                HttpMethod.POST,
-                request,
-                Faculty.class
-        );
+        ResponseEntity<Faculty> response = template.exchange(getBaseUrl() + "/create", HttpMethod.POST, request, Faculty.class);
 
         Faculty reternCreatedFaculty = Objects.requireNonNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         HttpEntity<Faculty> requestCreatedFaculty = new HttpEntity<>(reternCreatedFaculty);
-        ResponseEntity<Faculty> responseCreatedFaculty = template.exchange(
-                getBaseUrl() + "/get/" + reternCreatedFaculty.getId(),
-                HttpMethod.GET,
-                requestCreatedFaculty,
-                Faculty.class
-        );
+        ResponseEntity<Faculty> responseCreatedFaculty = template.exchange(getBaseUrl() + "/get/" + reternCreatedFaculty.getId(), HttpMethod.GET, requestCreatedFaculty, Faculty.class);
 
         assertEquals(HttpStatus.OK, responseCreatedFaculty.getStatusCode());
         assertNotNull(responseCreatedFaculty.getBody());
@@ -185,21 +171,11 @@ public class FacultyControllerTestRestTemplateTest {
         List<Faculty> testFaculties = new ArrayList<>(Arrays.asList(testFaculty1, testFaculty2));
 
         HttpEntity<List<Faculty>> request = new HttpEntity<>(testFaculties);
-        ResponseEntity<List<Faculty>> response = template.exchange(
-                getBaseUrl() + "/create/many",
-                HttpMethod.POST,
-                request,
-                new ParameterizedTypeReference<List<Faculty>>() {
-                }
-        );
+        ResponseEntity<List<Faculty>> response = template.exchange(getBaseUrl() + "/create/many", HttpMethod.POST, request, new ParameterizedTypeReference<List<Faculty>>() {
+        });
 
-        ResponseEntity<List<Faculty>> responseGet = template.exchange(
-                getBaseUrl() + "/get/many/179-183",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Faculty>>() {
-                }
-        );
+        ResponseEntity<List<Faculty>> responseGet = template.exchange(getBaseUrl() + "/get/many/179-183", HttpMethod.GET, null, new ParameterizedTypeReference<List<Faculty>>() {
+        });
 
         assertEquals(HttpStatus.OK, responseGet.getStatusCode());
         assertNotNull(responseGet.getBody());
@@ -229,8 +205,7 @@ public class FacultyControllerTestRestTemplateTest {
 
         assertEquals(HttpStatus.OK, voidResponseEntity.getStatusCode());
 
-        ResponseEntity<Student[]> response = template.getForEntity(
-                "/faculty/get/students/" + faculty.getId(), Student[].class);
+        ResponseEntity<Student[]> response = template.getForEntity("/faculty/get/students/" + faculty.getId(), Student[].class);
 
         assertNotNull(response.getBody());
         Student[] returnedStudents = response.getBody();
